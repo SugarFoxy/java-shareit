@@ -34,8 +34,8 @@ class ItemControllerTest {
     Item itemUpdateAvailable;
 
     @BeforeEach
-    void beforeEach() throws Exception {
-        user = new User(1, "correct", "correct@mail.ru");
+    void beforeEach(){
+        user = new User(1, "correct", "forItem@mail.ru");
         itemCorrect = new Item(1, "correct", "correct desc", true, 1);
         itemNullName = new Item(1, null, "null name", true, 1);
         itemNullDescription = new Item(1, "null desc", null, true, 1);
@@ -45,13 +45,14 @@ class ItemControllerTest {
         itemUpdateName = new Item(1, "update name", null, null, 1);
         itemUpdateDescription = new Item(1, null, "update desc", null, 1);
         itemUpdateAvailable = new Item(1, null, null, true, 1);
-        mockMvc.perform(post("/users")
-                .content(objectMapper.writeValueAsString(user))
-                .contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     void itemPostTest() throws Exception {
+        mockMvc.perform(post("/users")
+                .content(objectMapper.writeValueAsString(user))
+                .contentType(MediaType.APPLICATION_JSON));
+
         mockMvc.perform(post("/items")
                         .content(objectMapper.writeValueAsString(itemCorrect))
                         .contentType(MediaType.APPLICATION_JSON)

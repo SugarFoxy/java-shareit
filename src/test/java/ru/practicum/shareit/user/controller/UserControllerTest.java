@@ -28,10 +28,12 @@ class UserControllerTest {
     private User userUpdateEmail;
     private User userUpdateAll;
     private User userUpdateInvalidEmail;
+    private User user;
 
     @BeforeEach
-    void beforeEach() throws Exception{
-        userCorrect = new User(1, "correct", "correct@mail.ru");
+    void beforeEach(){
+        user = new User(3, "correct", "user@mail.ru");
+        userCorrect = new User(2, "correct", "correct@mail.ru");
         userDuplicateEmail = new User(1, "duplicate", "correct@mail.ru");
         userNoEmail = new User(2, "no email", "");
         userInvalidEmail = new User(3, "invalid email", "invalid.email");
@@ -39,7 +41,6 @@ class UserControllerTest {
         userUpdateEmail = new User(5, null, "update@mail.ru");
         userUpdateAll = new User(6, "updateAll", "updateAll@mail.ru");
         userUpdateInvalidEmail = new User(7, null, "invalid.email");
-        mockMvc.perform(delete("/users/{userId}",1));
     }
 
     @Test
@@ -68,7 +69,7 @@ class UserControllerTest {
     @Test
     void patchTest() throws Exception {
         mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(userCorrect))
+                        .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
