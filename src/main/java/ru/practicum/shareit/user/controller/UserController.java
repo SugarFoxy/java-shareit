@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.validation.groups.Create;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.groups.Create;
+import ru.practicum.shareit.validation.groups.Update;
 
 import java.util.List;
 
@@ -40,8 +41,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser( @PathVariable Integer userId,
-                               @Validated @RequestBody UserDto user) {
+    public UserDto updateUser(@PathVariable Integer userId,
+                              @Validated(Update.class) @RequestBody UserDto user) {
         return userService.updateUser(user, userId);
     }
 
