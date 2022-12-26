@@ -10,7 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.model.User;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -31,7 +32,7 @@ class UserControllerTest {
     private User user;
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         user = new User(3, "correct", "user@mail.ru");
         userCorrect = new User(2, "correct", "correct@mail.ru");
         userDuplicateEmail = new User(1, "duplicate", "correct@mail.ru");

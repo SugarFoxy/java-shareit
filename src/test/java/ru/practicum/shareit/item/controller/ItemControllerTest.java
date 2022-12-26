@@ -34,7 +34,7 @@ class ItemControllerTest {
     Item itemUpdateAvailable;
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         user = new User(1, "correct", "forItem@mail.ru");
         itemCorrect = new Item(1, "correct", "correct desc", true, 1);
         itemNullName = new Item(1, null, "null name", true, 1);
