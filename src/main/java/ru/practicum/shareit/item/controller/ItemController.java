@@ -11,9 +11,6 @@ import ru.practicum.shareit.validation.groups.Create;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 public class ItemController {

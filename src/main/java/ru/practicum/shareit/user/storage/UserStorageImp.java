@@ -66,7 +66,6 @@ public class UserStorageImp implements UserStorage {
             throw new MissingObjectException(massage);
     }
 
-
     private void isExist(String email) {
         boolean doesItExist = false;
         for (User user : users.values()) {

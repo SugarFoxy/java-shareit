@@ -16,9 +16,9 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class UserDto {
     private Integer id;
-    @NotBlank(message = "Имя не может быть пустым",groups = {Create.class})
+    @NotBlank(message = "Имя не может быть пустым", groups = {Create.class})
     private String name;
-    @Email(message = "Некорректный email",groups = {Create.class, Update.class})
-    @NotBlank(message = "email не может быть пустым",groups = {Create.class})
+    @Email(message = "Некорректный email", groups = {Create.class, Update.class})
+    @NotBlank(message = "email не может быть пустым", groups = {Create.class})
     private String email;
 }

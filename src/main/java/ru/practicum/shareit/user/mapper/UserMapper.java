@@ -17,6 +17,5 @@ public class UserMapper {
                 .name(userDto.getName())
                 .build();
     }
-
 }
 
