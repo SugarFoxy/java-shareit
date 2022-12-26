@@ -10,8 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.model.User;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -31,7 +30,7 @@ class UserControllerTest {
     private User userUpdateInvalidEmail;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws Exception{
         userCorrect = new User(1, "correct", "correct@mail.ru");
         userDuplicateEmail = new User(1, "duplicate", "correct@mail.ru");
         userNoEmail = new User(2, "no email", "");
@@ -40,6 +39,7 @@ class UserControllerTest {
         userUpdateEmail = new User(5, null, "update@mail.ru");
         userUpdateAll = new User(6, "updateAll", "updateAll@mail.ru");
         userUpdateInvalidEmail = new User(7, null, "invalid.email");
+        mockMvc.perform(delete("/users/{userId}",1));
     }
 
     @Test
