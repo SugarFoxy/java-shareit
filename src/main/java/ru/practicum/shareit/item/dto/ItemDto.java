@@ -18,11 +18,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class ItemDto {
     private Integer id;
-    @NotBlank(groups = Create.class)
+    @NotBlank(message = "Название не может быть пустым",groups = Create.class)
     private String name;
-    @NotBlank(groups = Create.class)
+    @NotBlank(message = "Описание не может быть пустым",groups = Create.class)
     private String description;
-    @NotNull(groups = Create.class)
+    @NotNull(message = "Статус не может отсутствовать",groups = Create.class)
     private Boolean available;
     private Integer owner;
 }
