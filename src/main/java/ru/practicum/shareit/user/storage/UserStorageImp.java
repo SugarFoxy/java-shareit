@@ -64,6 +64,7 @@ public class UserStorageImp implements UserStorage {
     @Override
     public void deleteUser(Integer id) {
         checkUserAvailability("удалить", id);
+        usersEmail.remove(users.get(id).getEmail());
         users.remove(id);
         log.info("Получен запрос на удаление пользователя");
     }
