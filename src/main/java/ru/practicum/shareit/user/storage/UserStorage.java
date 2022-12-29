@@ -14,4 +14,6 @@ public interface UserStorage {
     User updateUser(User user);
 
     void deleteUser(Integer id);
+
+    void checkUserAvailability(String operation, int id);
 }

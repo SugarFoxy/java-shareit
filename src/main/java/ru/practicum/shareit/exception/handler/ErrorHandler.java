@@ -6,8 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.MissingObjectException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.user.controller.UserController;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = {UserController.class,
-                                         ItemController.class})
+        ItemController.class})
 public class ErrorHandler {
 
     @ExceptionHandler()
@@ -38,7 +38,7 @@ public class ErrorHandler {
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handle(final ValidationException e) {
+    public Map<String, String> handle(final DuplicateException e) {
         Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
         return error;

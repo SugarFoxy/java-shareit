@@ -54,12 +54,15 @@ public class ItemStorageImp implements ItemStorage {
         checkAvailability("изменить", item.getId());
         checkOwner(item.getId(), item.getOwner());
         Item updateItem = items.get(item.getId());
-        if (item.getName() != null && !item.getName().isBlank())
+        if (item.getName() != null && !item.getName().isBlank()) {
             updateItem.setName(item.getName());
-        if (item.getDescription() != null && !item.getDescription().isBlank())
+        }
+        if (item.getDescription() != null && !item.getDescription().isBlank()) {
             updateItem.setDescription(item.getDescription());
-        if (item.getAvailable() != null)
+        }
+        if (item.getAvailable() != null) {
             updateItem.setAvailable(item.getAvailable());
+        }
         log.info("Получен запрос на изменение характеристик вещи");
         return updateItem;
     }
@@ -70,13 +73,15 @@ public class ItemStorageImp implements ItemStorage {
 
     private void checkAvailability(String operation, int id) {
         String massage = String.format("Невозможно %s. Вещь не нвйдена!", operation);
-        if (!items.containsKey(id))
+        if (!items.containsKey(id)) {
             throw new MissingObjectException(massage);
+        }
     }
 
     private void checkOwner(int itemId, int userId) {
-        if (items.get(itemId).getOwner() != userId)
+        if (items.get(itemId).getOwner() != userId) {
             throw new MissingObjectException("Вещь принадлежит другому пользователю!");
+        }
     }
 
     private String mergeNameAndDesc(int itemId) {

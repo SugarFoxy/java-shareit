@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImp implements ItemService {
-    UserStorage userStorage;
-    ItemStorage itemStorage;
+    private final UserStorage userStorage;
+    private final ItemStorage itemStorage;
 
     @Autowired
     public ItemServiceImp(@Qualifier("userStorageImp") UserStorage userStorage,
@@ -27,7 +27,7 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public List<ItemDto> getItemsByUser(Integer userId) {
-        userStorage.getUserById(userId);
+        userStorage.checkUserAvailability("найти", userId);
         return itemStorage.getItemsByUser(userId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
@@ -45,14 +45,14 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public ItemDto getItemById(Integer itemId, Integer userId) {
-        userStorage.getUserById(userId);
+        userStorage.checkUserAvailability("найти", userId);
         Item item = itemStorage.getItemById(itemId);
         return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto creatItem(Integer userId, ItemDto itemDto) {
-        userStorage.getUserById(userId);
+        userStorage.checkUserAvailability("найти", userId);
         itemDto.setOwner(userId);
         Item item = itemStorage.addItem(ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);
@@ -60,7 +60,7 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public ItemDto updateItem(Integer userId, ItemDto itemDto, Integer itemId) {
-        userStorage.getUserById(userId);
+        userStorage.checkUserAvailability("найти", userId);
         itemDto.setOwner(userId);
         itemDto.setId(itemId);
         Item item = itemStorage.updateItem(ItemMapper.toItem(itemDto));
