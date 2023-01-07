@@ -14,7 +14,7 @@ import java.util.Map;
 @Repository
 @Slf4j
 public class UserStorageImp implements UserStorage {
-    private final Map<Integer, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
     private final Map<String, User> usersEmail = new HashMap<>();
     private int id = 1;
 
@@ -25,7 +25,7 @@ public class UserStorageImp implements UserStorage {
     }
 
     @Override
-    public User getUserById(Integer id) {
+    public User getUserById(Long id) {
         checkUserAvailability("найти", id);
         log.info("Получен запрос на вывод пользователя по id");
         return users.get(id);
@@ -62,7 +62,7 @@ public class UserStorageImp implements UserStorage {
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         checkUserAvailability("удалить", id);
         usersEmail.remove(users.get(id).getEmail());
         users.remove(id);
@@ -70,7 +70,7 @@ public class UserStorageImp implements UserStorage {
     }
 
     @Override
-    public void checkUserAvailability(String operation, int id) {
+    public void checkUserAvailability(String operation, Long id) {
         String massage = String.format("Невозможно %s. Пользователь отсутствует!", operation);
         if (!users.containsKey(id)) {
             throw new MissingObjectException(massage);
@@ -83,7 +83,7 @@ public class UserStorageImp implements UserStorage {
         }
     }
 
-    private int getId() {
+    private long getId() {
         return id++;
     }
 }

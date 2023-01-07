@@ -27,7 +27,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Integer id) {
+    public UserDto getUserById(Long id) {
         return UserMapper.toUserDto(storage.getUserById(id));
     }
 
@@ -37,13 +37,13 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto, Integer id) {
+    public UserDto updateUser(UserDto userDto, Long id) {
         userDto.setId(id);
         return UserMapper.toUserDto(storage.updateUser(UserMapper.toUser(userDto)));
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         storage.deleteUser(id);
     }
 }
