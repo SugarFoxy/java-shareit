@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
@@ -29,7 +28,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") @Nullable Long userId) {
+    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         return itemService.getItemsByUser(userId);
     }
 
@@ -39,20 +38,20 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") @Nullable Long userId,
+    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
                                @PathVariable Long itemId) {
         return itemService.getItemById(itemId, userId);
     }
 
     @PostMapping
-    public ItemDto creatItem(@RequestHeader("X-Sharer-User-Id") @Nullable Long userId,
+    public ItemDto creatItem(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
                              @Validated(Create.class) @RequestBody ItemDto itemDto
     ) {
         return itemService.creatItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Nullable Long userId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
                               @Validated @RequestBody ItemDto itemDto,
                               @PathVariable @NotNull Long itemId) {
         return itemService.updateItem(userId, itemDto, itemId);
@@ -61,7 +60,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto postComment(
             @PathVariable Long itemId,
-            @RequestHeader("X-Sharer-User-Id") @Nullable Long authorId,
+            @RequestHeader("X-Sharer-User-Id") @NotNull Long authorId,
             @Validated @RequestBody CommentDto commentDto
     ) {
         return commentService.addComment(itemId, authorId, commentDto);
