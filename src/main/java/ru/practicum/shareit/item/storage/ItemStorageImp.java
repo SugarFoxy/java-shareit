@@ -21,7 +21,7 @@ public class ItemStorageImp implements ItemStorage {
     public List<Item> getItemsByUser(Long userId) {
         log.info("Получен запрос на вывод вещей определенного пользователя");
         return items.values().stream()
-                .filter(item -> Objects.equals(item.getOwner(), userId))
+                .filter(item -> item.getOwner().getId().equals(userId))
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class ItemStorageImp implements ItemStorage {
     }
 
     private void checkOwner(Long itemId, Long userId) {
-        if (items.get(itemId).getOwner().getId() != userId) {
+        if (!Objects.equals(items.get(itemId).getOwner().getId(), userId)) {
             throw new MissingObjectException("Вещь принадлежит другому пользователю!");
         }
     }
