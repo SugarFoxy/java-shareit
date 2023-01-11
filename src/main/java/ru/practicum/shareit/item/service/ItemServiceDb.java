@@ -42,7 +42,6 @@ public class ItemServiceDb implements ItemService, CommentService {
                 .collect(Collectors.toList());
     }
 
-    //TODO доделать после букинга
     @Override
     public List<ItemDto> getItemByText(String text) {
         if (text.isBlank()) {
@@ -69,7 +68,6 @@ public class ItemServiceDb implements ItemService, CommentService {
         return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto)));
     }
 
-    //TODO доделать после букинга
     @Override
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
         User user = getUser(userId);
@@ -159,6 +157,4 @@ public class ItemServiceDb implements ItemService, CommentService {
         }
         return BookingMapper.toDateBookingDto(bookings.get(0));
     }
-
-
 }
