@@ -26,7 +26,7 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemsByUser(Integer userId) {
+    public List<ItemDto> getItemsByUser(Long userId) {
         userStorage.checkUserAvailability("найти", userId);
         return itemStorage.getItemsByUser(userId).stream()
                 .map(ItemMapper::toItemDto)
@@ -44,24 +44,24 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(Integer itemId, Integer userId) {
+    public ItemDto getItemById(Long itemId, Long userId) {
         userStorage.checkUserAvailability("найти", userId);
         Item item = itemStorage.getItemById(itemId);
         return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public ItemDto creatItem(Integer userId, ItemDto itemDto) {
+    public ItemDto creatItem(Long userId, ItemDto itemDto) {
         userStorage.checkUserAvailability("найти", userId);
-        itemDto.setOwner(userId);
+        itemDto.setOwner(userStorage.getUserById(userId));
         Item item = itemStorage.addItem(ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public ItemDto updateItem(Integer userId, ItemDto itemDto, Integer itemId) {
+    public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
         userStorage.checkUserAvailability("найти", userId);
-        itemDto.setOwner(userId);
+        itemDto.setOwner(userStorage.getUserById(userId));
         itemDto.setId(itemId);
         Item item = itemStorage.updateItem(ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);

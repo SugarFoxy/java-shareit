@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
@@ -14,14 +15,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceDb implements UserService {
-
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserServiceDb(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public List<UserDto> getUsers() {
@@ -56,7 +52,12 @@ public class UserServiceDb implements UserService {
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        return UserMapper.toUserDto(userRepository.save(user));
+        try {
+            return UserMapper.toUserDto(userRepository.save(user));
+        } catch (Exception e) {
+        throw new DuplicateException(e.getMessage());
+    }
+
     }
 
     @Override

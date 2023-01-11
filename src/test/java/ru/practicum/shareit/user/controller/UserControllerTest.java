@@ -33,15 +33,15 @@ class UserControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        user = new User(3, "correct", "user@mail.ru");
-        userCorrect = new User(2, "correct", "correct@mail.ru");
-        userDuplicateEmail = new User(1, "duplicate", "correct@mail.ru");
-        userNoEmail = new User(2, "no email", "");
-        userInvalidEmail = new User(3, "invalid email", "invalid.email");
-        userUpdateName = new User(4, "update name", null);
-        userUpdateEmail = new User(5, null, "update@mail.ru");
-        userUpdateAll = new User(6, "updateAll", "updateAll@mail.ru");
-        userUpdateInvalidEmail = new User(7, null, "invalid.email");
+        user = new User(3L, "correct", "user@mail.ru");
+        userCorrect = new User(2L, "correct", "correct@mail.ru");
+        userDuplicateEmail = new User(1L, "duplicate", "correct@mail.ru");
+        userNoEmail = new User(2L, "no email", "");
+        userInvalidEmail = new User(3L, "invalid email", "invalid.email");
+        userUpdateName = new User(4L, "update name", null);
+        userUpdateEmail = new User(5L, null, "update@mail.ru");
+        userUpdateAll = new User(6L, "updateAll", "updateAll@mail.ru");
+        userUpdateInvalidEmail = new User(7L, null, "invalid.email");
     }
 
     @Test
