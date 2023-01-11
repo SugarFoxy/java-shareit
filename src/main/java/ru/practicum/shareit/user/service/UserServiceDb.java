@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.MissingObjectException;
@@ -55,8 +54,8 @@ public class UserServiceDb implements UserService {
         try {
             return UserMapper.toUserDto(userRepository.save(user));
         } catch (Exception e) {
-        throw new DuplicateException(e.getMessage());
-    }
+            throw new DuplicateException(e.getMessage());
+        }
 
     }
 

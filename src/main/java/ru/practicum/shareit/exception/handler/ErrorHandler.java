@@ -7,8 +7,11 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.booking.BookingController;
-import ru.practicum.shareit.exception.*;
+import ru.practicum.shareit.booking.controller.BookingController;
+import ru.practicum.shareit.exception.DuplicateException;
+import ru.practicum.shareit.exception.InvalidRequestException;
+import ru.practicum.shareit.exception.MissingObjectException;
+import ru.practicum.shareit.exception.OtherDataException;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.user.controller.UserController;
 

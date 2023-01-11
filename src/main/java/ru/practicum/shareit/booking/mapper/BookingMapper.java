@@ -5,8 +5,8 @@ import ru.practicum.shareit.booking.dto.DateBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 
 public class BookingMapper {
-    public  static BookingOutputDto toBookingDto(Booking booking){
-        return  BookingOutputDto.builder()
+    public static BookingOutputDto toBookingDto(Booking booking) {
+        return BookingOutputDto.builder()
                 .id(booking.getId())
                 .end(booking.getEnd())
                 .start(booking.getStart())

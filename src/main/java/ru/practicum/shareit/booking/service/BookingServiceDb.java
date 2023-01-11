@@ -76,7 +76,7 @@ public class BookingServiceDb implements BookingService {
         Booking booking = getBooking(bookingId);
         User owner = booking.getItem().getOwner();
         User booker = booking.getBooker();
-        boolean canGetInfo =owner.equals(user) || booker.equals(user);
+        boolean canGetInfo = owner.equals(user) || booker.equals(user);
         if (!canGetInfo) {
             throw new OtherDataException("Просматривать информацию о бронировании могут владелец или бронирующий");
         }

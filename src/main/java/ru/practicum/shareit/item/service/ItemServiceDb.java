@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ItemServiceDb implements ItemService,CommentService {
+public class ItemServiceDb implements ItemService, CommentService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -98,22 +98,22 @@ public class ItemServiceDb implements ItemService,CommentService {
         isTheBookingCompleted(item, author);
         commentDto.setCreated(LocalDateTime.now());
         Comment comment = CommentMapper.toComment(commentDto, author, item);
-        return CommentMapper.toCommentDto( commentRepository.save(comment));
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
-    private void isBooker(Item item, User user){
-       boolean isBooker = bookingRepository.findByBooker(user).stream()
+    private void isBooker(Item item, User user) {
+        boolean isBooker = bookingRepository.findByBooker(user).stream()
                 .anyMatch(booking -> booking.getItem().equals(item));
-       if(!isBooker){
-           throw new InvalidRequestException("Невозможно оставить комментарий.Пльзователь никогда ее не бронировал");
-       }
+        if (!isBooker) {
+            throw new InvalidRequestException("Невозможно оставить комментарий.Пльзователь никогда ее не бронировал");
+        }
     }
 
     private void isTheBookingCompleted(Item item, User user) {
         boolean isEnd = bookingRepository.findByBookerAndItem(user, item).stream()
                 .anyMatch((booking) -> booking.getEnd().isBefore(LocalDateTime.now()));
-        if(!isEnd){
-             throw new InvalidRequestException("Невозможно оставить коммент.Бронирование не завершено");
+        if (!isEnd) {
+            throw new InvalidRequestException("Невозможно оставить коммент.Бронирование не завершено");
         }
     }
 
