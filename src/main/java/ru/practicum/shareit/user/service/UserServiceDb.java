@@ -36,7 +36,7 @@ public class UserServiceDb implements UserService {
         try {
             return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
         } catch (Exception e) {
-            throw new DuplicateException(e.getMessage());
+            throw new DuplicateException("Пользователь с таким email уже существует");
         }
     }
 

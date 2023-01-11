@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(value = "/shema.sql")
 class ItemControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
@@ -88,6 +90,10 @@ class ItemControllerTest {
 
     @Test
     void itemPatchTest() throws Exception {
+        mockMvc.perform(post("/users")
+                .content(objectMapper.writeValueAsString(user))
+                .contentType(MediaType.APPLICATION_JSON));
+
         mockMvc.perform(post("/items")
                         .content(objectMapper.writeValueAsString(itemCorrect))
                         .contentType(MediaType.APPLICATION_JSON)

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.model.User;
 
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(value = "/shema.sql")
 class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
@@ -35,7 +37,7 @@ class UserControllerTest {
     void beforeEach() {
         user = new User(3L, "correct", "user@mail.ru");
         userCorrect = new User(2L, "correct", "correct@mail.ru");
-        userDuplicateEmail = new User(1L, "duplicate", "correct@mail.ru");
+        userDuplicateEmail = new User(null, "duplicate", "correct@mail.ru");
         userNoEmail = new User(2L, "no email", "");
         userInvalidEmail = new User(3L, "invalid email", "invalid.email");
         userUpdateName = new User(4L, "update name", null);
