@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql(value = "/shema.sql")
+@Sql(value = "/schema.sql")
 class ItemControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
