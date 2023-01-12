@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BookingServiceDb implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
@@ -51,6 +53,7 @@ public class BookingServiceDb implements BookingService {
 
         User user = getUser(userId);
         BookingOutputDto bookingOutputDto = new BookingOutputDto(bookingInputDto, null, item, user, Status.WAITING);
+        log.info("Бронирование создано");
         return BookingMapper.toBookingDto(bookingRepository.save(BookingMapper.toBooking(bookingOutputDto)));
     }
 
@@ -67,6 +70,7 @@ public class BookingServiceDb implements BookingService {
             throw new InvalidRequestException("Статус бронирования можно изменить только во время его ожидания");
         }
         booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
+        log.info("Бронирование изменено");
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
@@ -80,13 +84,14 @@ public class BookingServiceDb implements BookingService {
         if (!canGetInfo) {
             throw new OtherDataException("Просматривать информацию о бронировании могут владелец или бронирующий");
         }
+        log.info("Получен запрос на получение информации о бронировании");
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
     public List<BookingOutputDto> getAllBookings(Long bookerId, BookingState state) {
         User booker = getUser(bookerId);
-
+        log.info("Получен запрос на получение списка бронирований");
         switch (state) {
             case ALL:
                 return convertBookings(bookingRepository.findByBooker(booker));
@@ -109,7 +114,7 @@ public class BookingServiceDb implements BookingService {
     public List<BookingOutputDto> getAllBookingsForOwner(Long ownerId, BookingState state) {
         User owner = getUser(ownerId);
         List<Item> items = itemRepository.findByOwner(owner);
-
+        log.info("Получен запрос на получение списка бронирований по владельцу ");
         return items.stream()
                 .flatMap((item) -> getAllBookingsForItem(item, state).stream())
                 .collect(Collectors.toList());

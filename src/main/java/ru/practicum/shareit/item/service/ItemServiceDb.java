@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.DateBookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ItemServiceDb implements ItemService, CommentService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -36,6 +38,7 @@ public class ItemServiceDb implements ItemService, CommentService {
 
     @Override
     public List<ItemDto> getItemsByUser(Long userId) {
+        log.info("Получен запрос на список вещей по хозяину");
         return itemRepository.findByOwner(getUser(userId)).stream()
                 .map(item -> fillItemDto(item, userId))
                 .sorted(Comparator.comparing(ItemDto::getId))
@@ -44,6 +47,7 @@ public class ItemServiceDb implements ItemService, CommentService {
 
     @Override
     public List<ItemDto> getItemByText(String text) {
+        log.info("Получен запрос на поиск вещи по названию или описанию");
         if (text.isBlank()) {
             return new ArrayList<>();
         }
@@ -55,6 +59,7 @@ public class ItemServiceDb implements ItemService, CommentService {
 
     @Override
     public ItemDto getItemById(Long itemId, Long userId) {
+        log.info("Получен запрос на получение вещи");
         Item item = getItem(itemId);
         return ItemMapper.toItemDto(item,
                 getComments(itemId),
@@ -64,12 +69,14 @@ public class ItemServiceDb implements ItemService, CommentService {
 
     @Override
     public ItemDto creatItem(Long userId, ItemDto itemDto) {
+        log.info("Получен запрос на добавление вещи");
         itemDto.setOwner(getUser(userId));
         return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto)));
     }
 
     @Override
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
+        log.info("Получен запрос на изменение вещи");
         User user = getUser(userId);
         Item item = getItem(itemId);
 
@@ -90,6 +97,7 @@ public class ItemServiceDb implements ItemService, CommentService {
 
     @Override
     public CommentDto addComment(Long itemId, Long authorId, CommentDto commentDto) {
+        log.info("Получен запрос на добавление коммента");
         Item item = getItem(itemId);
         User author = getUser(authorId);
         isBooker(item, author);

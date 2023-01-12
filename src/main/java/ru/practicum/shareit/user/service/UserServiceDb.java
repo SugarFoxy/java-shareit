@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.MissingObjectException;
@@ -15,11 +16,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceDb implements UserService {
     private final UserRepository userRepository;
 
     @Override
     public List<UserDto> getUsers() {
+        log.info("Получен запрос на получение списка пользователей");
         return userRepository.findAll().stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
@@ -27,12 +30,14 @@ public class UserServiceDb implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
+        log.info("Получен запрос на получение пользователя");
         Optional<User> user = userRepository.findById(id);
         return UserMapper.toUserDto(user.orElseThrow(() -> new MissingObjectException("Невозможно и найти. Пользователь отсутствует!")));
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        log.info("Получен запрос на создание пользователя");
         try {
             return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
         } catch (Exception e) {
@@ -42,6 +47,7 @@ public class UserServiceDb implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
+        log.info("Получен запрос на изменение пользователя");
         userDto.setId(id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new MissingObjectException("Невозможно изменить. Пользователь отсутствует!"));
@@ -61,6 +67,7 @@ public class UserServiceDb implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        log.info("Получен запрос на удаление пользователя");
         userRepository.deleteById(id);
     }
 }
