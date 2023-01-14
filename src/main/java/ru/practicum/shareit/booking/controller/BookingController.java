@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
-import ru.practicum.shareit.booking.service.BookingServiceDb;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.state.BookingState;
 
 import javax.validation.Valid;
@@ -15,10 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {
-    private final BookingServiceDb bookingService;
+    private final BookingService bookingService;
 
     @Autowired
-    public BookingController(@Qualifier("bookingServiceDb") BookingServiceDb bookingService) {
+    public BookingController(@Qualifier("bookingServiceDb") BookingService bookingService) {
         this.bookingService = bookingService;
     }
 

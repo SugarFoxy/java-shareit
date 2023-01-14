@@ -16,8 +16,7 @@ public class BookingComparator implements Comparator<BookingOutputDto> {
             return 0;
         } else if (start1.isBefore(start2)) {
             return -1;
-        } else {
-            return 1;
         }
+        return 1;
     }
 }

@@ -2,7 +2,7 @@ package ru.practicum.shareit.booking.mapper;
 
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.dto.DateBookingDto;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.dto.comparator.model.Booking;
 
 public class BookingMapper {
     public static BookingOutputDto toBookingDto(Booking booking) {

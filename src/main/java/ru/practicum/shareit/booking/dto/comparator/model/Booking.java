@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.model;
+package ru.practicum.shareit.booking.dto.comparator.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,17 +19,17 @@ import java.time.LocalDateTime;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    @Column(name = "start_date")
-    LocalDateTime start;
-    @Column(name = "end_date")
-    LocalDateTime end;
+    private Long id;
+    @Column(name = "start_date", nullable = false)
+    private LocalDateTime start;
+    @Column(name = "end_date", nullable = false)
+    private LocalDateTime end;
     @ManyToOne
-    @JoinColumn(name = "item_id")
-    Item item;
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
     @ManyToOne
-    @JoinColumn(name = "booker_id")
-    User booker;
+    @JoinColumn(name = "booker_id", nullable = false)
+    private User booker;
     @Enumerated(EnumType.STRING)
-    Status status;
+    private Status status;
 }
