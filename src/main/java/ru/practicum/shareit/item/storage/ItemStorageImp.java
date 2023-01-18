@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @Repository
 @Slf4j
 public class ItemStorageImp implements ItemStorage {
-    private final Map<Integer, Item> items = new HashMap<>();
+    private final Map<Long, Item> items = new HashMap<>();
     int id = 1;
 
     @Override
-    public List<Item> getItemsByUser(Integer userId) {
+    public List<Item> getItemsByUser(Long userId) {
         log.info("Получен запрос на вывод вещей определенного пользователя");
         return items.values().stream()
-                .filter(item -> Objects.equals(item.getOwner(), userId))
+                .filter(item -> item.getOwner().getId().equals(userId))
                 .collect(Collectors.toList());
     }
 
@@ -35,7 +35,7 @@ public class ItemStorageImp implements ItemStorage {
     }
 
     @Override
-    public Item getItemById(Integer itemId) {
+    public Item getItemById(Long itemId) {
         checkAvailability("найти", itemId);
         log.info("Получен запрос получение вещи по id");
         return items.get(itemId);
@@ -52,7 +52,7 @@ public class ItemStorageImp implements ItemStorage {
     @Override
     public Item updateItem(Item item) {
         checkAvailability("изменить", item.getId());
-        checkOwner(item.getId(), item.getOwner());
+        checkOwner(item.getId(), item.getOwner().getId());
         Item updateItem = items.get(item.getId());
         if (item.getName() != null && !item.getName().isBlank()) {
             updateItem.setName(item.getName());
@@ -67,24 +67,24 @@ public class ItemStorageImp implements ItemStorage {
         return updateItem;
     }
 
-    private int getId() {
+    private long getId() {
         return id++;
     }
 
-    private void checkAvailability(String operation, int id) {
+    private void checkAvailability(String operation, Long id) {
         String massage = String.format("Невозможно %s. Вещь не нвйдена!", operation);
         if (!items.containsKey(id)) {
             throw new MissingObjectException(massage);
         }
     }
 
-    private void checkOwner(int itemId, int userId) {
-        if (items.get(itemId).getOwner() != userId) {
+    private void checkOwner(Long itemId, Long userId) {
+        if (!Objects.equals(items.get(itemId).getOwner().getId(), userId)) {
             throw new MissingObjectException("Вещь принадлежит другому пользователю!");
         }
     }
 
-    private String mergeNameAndDesc(int itemId) {
+    private String mergeNameAndDesc(Long itemId) {
         Item item = items.get(itemId);
         String merge = item.getName() + " " + item.getDescription();
         return merge.toLowerCase();
