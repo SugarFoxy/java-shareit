@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.dto.comparator.model;
+package ru.practicum.shareit.booking.dto.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,5 +31,5 @@ public class Booking {
     @JoinColumn(name = "booker_id", nullable = false)
     private User booker;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private BookingStatus status;
 }

@@ -7,8 +7,8 @@ import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.dto.comparator.BookingComparator;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
-import ru.practicum.shareit.booking.dto.comparator.model.Booking;
-import ru.practicum.shareit.booking.dto.comparator.model.Status;
+import ru.practicum.shareit.booking.dto.model.Booking;
+import ru.practicum.shareit.booking.dto.model.BookingStatus;
 import ru.practicum.shareit.booking.state.BookingState;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.InvalidRequestException;
@@ -52,7 +52,7 @@ public class BookingServiceDb implements BookingService {
         }
 
         User user = getUser(userId);
-        BookingOutputDto bookingOutputDto = new BookingOutputDto(bookingInputDto, null, item, user, Status.WAITING);
+        BookingOutputDto bookingOutputDto = new BookingOutputDto(bookingInputDto, null, item, user, BookingStatus.WAITING);
         log.info("Бронирование создано");
         return BookingMapper.toBookingDto(bookingRepository.save(BookingMapper.toBooking(bookingOutputDto)));
     }
@@ -66,10 +66,10 @@ public class BookingServiceDb implements BookingService {
         if (!user.equals(owner)) {
             throw new OtherDataException("Статус бронирования может изменить только владелец");
         }
-        if (booking.getStatus() != Status.WAITING) {
+        if (booking.getStatus() != BookingStatus.WAITING) {
             throw new InvalidRequestException("Статус бронирования можно изменить только во время его ожидания");
         }
-        booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
+        booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         log.info("Бронирование изменено");
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
@@ -102,9 +102,9 @@ public class BookingServiceDb implements BookingService {
             case FUTURE:
                 return convertBookings(bookingRepository.findByBookerAndStartIsAfter(booker, LocalDateTime.now()));
             case WAITING:
-                return convertBookings(bookingRepository.findByBookerAndStatus(booker, Status.WAITING));
+                return convertBookings(bookingRepository.findByBookerAndStatus(booker, BookingStatus.WAITING));
             case REJECTED:
-                return convertBookings(bookingRepository.findByBookerAndStatus(booker, Status.REJECTED));
+                return convertBookings(bookingRepository.findByBookerAndStatus(booker, BookingStatus.REJECTED));
         }
 
         throw new InvalidRequestException("Не существующий статус");
@@ -131,9 +131,9 @@ public class BookingServiceDb implements BookingService {
             case FUTURE:
                 return convertBookings(bookingRepository.findByItemAndStartIsAfter(item, LocalDateTime.now()));
             case WAITING:
-                return convertBookings(bookingRepository.findByItemAndStatus(item, Status.WAITING));
+                return convertBookings(bookingRepository.findByItemAndStatus(item, BookingStatus.WAITING));
             case REJECTED:
-                return convertBookings(bookingRepository.findByItemAndStatus(item, Status.REJECTED));
+                return convertBookings(bookingRepository.findByItemAndStatus(item, BookingStatus.REJECTED));
             default:
                 throw new UnknownStateException("Unknown state: UNSUPPORTED_STATUS");
         }
