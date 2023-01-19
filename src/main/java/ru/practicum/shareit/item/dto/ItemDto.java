@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.DateBookingDto;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.groups.Create;
 
@@ -25,6 +26,7 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Статус не может отсутствовать", groups = Create.class)
     private Boolean available;
+    private ItemRequest request;
     private User owner;
     private List<CommentDto> comments;
     private DateBookingDto lastBooking;

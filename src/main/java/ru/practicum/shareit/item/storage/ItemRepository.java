@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "where upper(i.name) like upper(concat('%', ?1, '%')) " +
             "   or upper(i.description) like upper(concat('%', ?1, '%'))")
     List<Item> search(@Param("text") String text);
+
+    List<Item> findByRequest(ItemRequest itemRequest);
 }

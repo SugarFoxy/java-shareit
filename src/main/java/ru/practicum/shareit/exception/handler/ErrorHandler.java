@@ -13,6 +13,7 @@ import ru.practicum.shareit.exception.InvalidRequestException;
 import ru.practicum.shareit.exception.MissingObjectException;
 import ru.practicum.shareit.exception.OtherDataException;
 import ru.practicum.shareit.item.controller.ItemController;
+import ru.practicum.shareit.request.controller.ItemRequestController;
 import ru.practicum.shareit.user.controller.UserController;
 
 import java.util.Map;
@@ -21,7 +22,8 @@ import java.util.Objects;
 @Slf4j
 @RestControllerAdvice(assignableTypes = {UserController.class,
         ItemController.class,
-        BookingController.class})
+        BookingController.class,
+        ItemRequestController.class})
 public class ErrorHandler {
 
     @ExceptionHandler()
@@ -37,7 +39,7 @@ public class ErrorHandler {
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handle(final MissingObjectException e) {
-        Map<String, String> error = Map.of("error", e.getMessage());
+        Map<String, String> error = Map.of("error", "e.getMessage()");
         log.warn(e.getMessage());
         return error;
     }

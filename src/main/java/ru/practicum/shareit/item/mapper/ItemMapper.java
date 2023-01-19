@@ -20,6 +20,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner())
+                .request(item.getRequest())
                 .comments(comments)
                 .lastBooking(lastBooking)
                 .nextBooking(nextBooking)
@@ -32,6 +33,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .request(item.getRequest())
                 .owner(item.getOwner())
                 .build();
     }
@@ -43,6 +45,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner())
+                .request(item.getRequest())
                 .comments(comments)
                 .build();
     }
@@ -54,6 +57,7 @@ public class ItemMapper {
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .owner(itemDto.getOwner())
+                .request(itemDto.getRequest())
                 .build();
     }
 }
