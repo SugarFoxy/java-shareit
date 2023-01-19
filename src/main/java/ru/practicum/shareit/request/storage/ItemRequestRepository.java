@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 public interface ItemRequestRepository extends PagingAndSortingRepository<ItemRequest, Long> {
-    List<ItemRequest> findAllByRequestor(User requestor);
+    List<ItemRequest> findByRequestor(User requestor);
 
     List<ItemRequest> findByRequestorNot(User requestor, Pageable pageable);
 }

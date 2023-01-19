@@ -18,6 +18,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -35,6 +37,7 @@ public class ItemServiceDb implements ItemService, CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
+    private final ItemRequestRepository requestRepository;
 
     @Override
     public List<ItemDto> getItemsByUser(Long userId) {
@@ -71,7 +74,9 @@ public class ItemServiceDb implements ItemService, CommentService {
     public ItemDto creatItem(Long userId, ItemDto itemDto) {
         log.info("Получен запрос на добавление вещи");
         itemDto.setOwner(getUser(userId));
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto)));
+        Long requestId = itemDto.getRequestId();
+        ItemRequest request = requestId != null ? getRequest(requestId):null;
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto,request)));
     }
 
     @Override
@@ -131,6 +136,10 @@ public class ItemServiceDb implements ItemService, CommentService {
     private Item getItem(Long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new MissingObjectException("Невозможно найти. вещь отсутствует!"));
+    }
+
+    private ItemRequest getRequest(Long id){
+       return requestRepository.findById(id).orElse(null);
     }
 
     private ItemDto fillItemDto(Item item, Long userId) {

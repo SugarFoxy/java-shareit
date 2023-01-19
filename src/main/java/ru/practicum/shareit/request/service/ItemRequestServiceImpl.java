@@ -6,7 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.MissingObjectException;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemForRequestDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -53,7 +54,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getRequestsByUser(Long userId) {
-        return requestRepository.findAllByRequestor(getUser(userId)).stream()
+        return requestRepository.findByRequestor(getUser(userId)).stream()
                 .map(request -> toItemRequestDto(request, getAnswers(request)))
                 .sorted(Comparator.comparing(ItemRequestDto::getCreated, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .collect(Collectors.toList());
@@ -66,10 +67,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private ItemRequest getRequest(Long id) {
         return requestRepository.findById(id)
-                .orElseThrow(() -> new MissingObjectException("Невозможно найти. Запрос отсутствует!"));
+                .orElseThrow(() -> new MissingObjectException("Невозможно найти. Заорпос отсутствует!"));
     }
 
-    private List<Item> getAnswers(ItemRequest itemRequest) {
-        return itemRepository.findByRequest(itemRequest);
+    private List<ItemForRequestDto> getAnswers(ItemRequest itemRequest) {
+        return itemRepository.findByRequest(itemRequest).stream()
+                .map(ItemMapper::toItemForRequestDto)
+                .collect(Collectors.toList());
     }
 }

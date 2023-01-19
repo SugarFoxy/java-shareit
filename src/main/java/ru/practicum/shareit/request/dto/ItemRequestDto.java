@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.constraints.NotBlank;
@@ -19,5 +20,5 @@ public class ItemRequestDto {
     @NotBlank(message = "Отсутствует описание искомого объекта")
     private String description;
     private LocalDateTime created;
-    private List<Item> answers;
+    private List<ItemForRequestDto> items;
 }
