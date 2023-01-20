@@ -2,13 +2,15 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.dto.comparator.BookingComparator;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.dto.model.Booking;
 import ru.practicum.shareit.booking.dto.model.BookingStatus;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.state.BookingState;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.InvalidRequestException;
@@ -17,6 +19,7 @@ import ru.practicum.shareit.exception.OtherDataException;
 import ru.practicum.shareit.exception.UnknownStateException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.paging.CustomPageRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -89,54 +92,49 @@ public class BookingServiceDb implements BookingService {
     }
 
     @Override
-    public List<BookingOutputDto> getAllBookings(Long bookerId, BookingState state) {
+    public List<BookingOutputDto> getAllBookings(Long bookerId, BookingState state, Integer from, Integer size) {
         User booker = getUser(bookerId);
-        log.info("Получен запрос на получение списка бронирований");
+        Pageable pageable = CustomPageRequest.create(from, size, Sort.by(Sort.Direction.DESC, "start"));
+
         switch (state) {
             case ALL:
-                return convertBookings(bookingRepository.findByBooker(booker));
+                return convertBookings(bookingRepository.findByBooker(booker, pageable));
             case CURRENT:
-                return convertBookings(bookingRepository.findCurrentByBooker(booker));
+                return convertBookings(bookingRepository.findCurrentByBooker(booker, pageable));
             case PAST:
-                return convertBookings(bookingRepository.findByBookerAndEndIsBefore(booker, LocalDateTime.now()));
+                return convertBookings(bookingRepository.findByBookerAndEndIsBefore(booker, LocalDateTime.now(), pageable));
             case FUTURE:
-                return convertBookings(bookingRepository.findByBookerAndStartIsAfter(booker, LocalDateTime.now()));
+                return convertBookings(bookingRepository.findByBookerAndStartIsAfter(booker, LocalDateTime.now(), pageable));
             case WAITING:
-                return convertBookings(bookingRepository.findByBookerAndStatus(booker, BookingStatus.WAITING));
+                return convertBookings(bookingRepository.findByBookerAndStatus(booker, BookingStatus.WAITING, pageable));
             case REJECTED:
-                return convertBookings(bookingRepository.findByBookerAndStatus(booker, BookingStatus.REJECTED));
+                return convertBookings(bookingRepository.findByBookerAndStatus(booker, BookingStatus.REJECTED, pageable));
         }
 
-        throw new InvalidRequestException("Не существующий статус");
+        throw new UnknownStateException("Unknown state: UNSUPPORTED_STATUS");
     }
 
     @Override
-    public List<BookingOutputDto> getAllBookingsForOwner(Long ownerId, BookingState state) {
+    public List<BookingOutputDto> getAllBookingsForOwner(Long ownerId, BookingState state, Integer from, Integer size) {
         User owner = getUser(ownerId);
-        List<Item> items = itemRepository.findByOwner(owner);
-        log.info("Получен запрос на получение списка бронирований по владельцу ");
-        return items.stream()
-                .flatMap((item) -> getAllBookingsForItem(item, state).stream())
-                .collect(Collectors.toList());
-    }
+        Pageable pageable = CustomPageRequest.create(from, size, Sort.by(Sort.Direction.DESC, "start"));
 
-    private List<BookingOutputDto> getAllBookingsForItem(Item item, BookingState state) {
         switch (state) {
             case ALL:
-                return convertBookings(bookingRepository.findByItem(item));
+                return convertBookings(bookingRepository.findByOwner(owner, pageable));
             case CURRENT:
-                return convertBookings(bookingRepository.findCurrentByItem(item));
+                return convertBookings(bookingRepository.findCurrentByOwner(owner, pageable));
             case PAST:
-                return convertBookings(bookingRepository.findByItemAndEndIsBefore(item, LocalDateTime.now()));
+                return convertBookings(bookingRepository.findByOwnerAndEndIsBefore(owner, LocalDateTime.now(), pageable));
             case FUTURE:
-                return convertBookings(bookingRepository.findByItemAndStartIsAfter(item, LocalDateTime.now()));
+                return convertBookings(bookingRepository.findByOwnerAndStartIsAfter(owner, LocalDateTime.now(), pageable));
             case WAITING:
-                return convertBookings(bookingRepository.findByItemAndStatus(item, BookingStatus.WAITING));
+                return convertBookings(bookingRepository.findByOwnerAndStatus(owner, BookingStatus.WAITING, pageable));
             case REJECTED:
-                return convertBookings(bookingRepository.findByItemAndStatus(item, BookingStatus.REJECTED));
-            default:
-                throw new UnknownStateException("Unknown state: UNSUPPORTED_STATUS");
+                return convertBookings(bookingRepository.findByOwnerAndStatus(owner, BookingStatus.REJECTED, pageable));
         }
+
+        throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
     }
 
     private List<BookingOutputDto> convertBookings(List<Booking> bookings) {

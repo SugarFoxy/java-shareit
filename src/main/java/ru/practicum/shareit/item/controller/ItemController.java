@@ -28,13 +28,19 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
-        return itemService.getItemsByUser(userId);
+    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                                        @RequestParam(required = false) Integer from,
+                                        @RequestParam(required = false) Integer size)
+
+    {
+        return itemService.getItemsByUser(userId,from,size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getItemByText(@RequestParam String text) {
-        return itemService.getItemByText(text);
+    public List<ItemDto> getItemByText(@RequestParam String text,
+                                       @RequestParam(required = false) Integer from,
+                                       @RequestParam(required = false) Integer size) {
+        return itemService.getItemByText(text,from,size);
     }
 
     @GetMapping("/{itemId}")

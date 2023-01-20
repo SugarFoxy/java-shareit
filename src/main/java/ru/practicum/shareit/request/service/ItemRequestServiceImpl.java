@@ -2,13 +2,13 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.MissingObjectException;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.paging.CustomPageRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
@@ -47,7 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllRequests(Long userId, Integer from, Integer size) {
         return requestRepository.findByRequestorNot(getUser(userId),
-                        PageRequest.of(from, size, Sort.by("created").descending())).stream()
+                        CustomPageRequest.of(from, size, Sort.by("created").descending())).stream()
                 .map(request -> toItemRequestDto(request, getAnswers(request)))
                 .collect(Collectors.toList());
     }

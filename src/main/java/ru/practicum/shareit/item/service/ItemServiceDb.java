@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.DateBookingDto;
 import ru.practicum.shareit.booking.dto.model.Booking;
@@ -18,6 +20,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.paging.CustomPageRequest;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
@@ -40,21 +43,23 @@ public class ItemServiceDb implements ItemService, CommentService {
     private final ItemRequestRepository requestRepository;
 
     @Override
-    public List<ItemDto> getItemsByUser(Long userId) {
+    public List<ItemDto> getItemsByUser(Long userId, Integer from, Integer size) {
         log.info("Получен запрос на список вещей по хозяину");
-        return itemRepository.findByOwner(getUser(userId)).stream()
+        Pageable pageable = CustomPageRequest.create(from, size, Sort.by(Sort.Direction.ASC, "id"));
+        return itemRepository.findByOwner(getUser(userId), pageable).stream()
                 .map(item -> fillItemDto(item, userId))
                 .sorted(Comparator.comparing(ItemDto::getId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> getItemByText(String text) {
+    public List<ItemDto> getItemByText(String text, Integer from, Integer size) {
         log.info("Получен запрос на поиск вещи по названию или описанию");
+        Pageable pageable = CustomPageRequest.create(from, size, Sort.by(Sort.Direction.ASC, "id"));
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.search(text.toLowerCase()).stream()
+        return itemRepository.search(text.toLowerCase(),pageable).stream()
                 .filter(Item::getAvailable)
                 .map(item -> ItemMapper.toItemDto(item, getComments(item.getId())))
                 .collect(Collectors.toList());
@@ -75,8 +80,8 @@ public class ItemServiceDb implements ItemService, CommentService {
         log.info("Получен запрос на добавление вещи");
         itemDto.setOwner(getUser(userId));
         Long requestId = itemDto.getRequestId();
-        ItemRequest request = requestId != null ? getRequest(requestId):null;
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto,request)));
+        ItemRequest request = requestId != null ? getRequest(requestId) : null;
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto, request)));
     }
 
     @Override
@@ -138,8 +143,8 @@ public class ItemServiceDb implements ItemService, CommentService {
                 .orElseThrow(() -> new MissingObjectException("Невозможно найти. вещь отсутствует!"));
     }
 
-    private ItemRequest getRequest(Long id){
-       return requestRepository.findById(id).orElse(null);
+    private ItemRequest getRequest(Long id) {
+        return requestRepository.findById(id).orElse(null);
     }
 
     private ItemDto fillItemDto(Item item, Long userId) {
