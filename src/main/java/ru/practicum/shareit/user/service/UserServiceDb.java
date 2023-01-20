@@ -38,11 +38,10 @@ public class UserServiceDb implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         log.info("Получен запрос на создание пользователя");
-        try {
-            return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
-        } catch (Exception e) {
-            throw new DuplicateException("Пользователь с таким email уже существует");
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new DuplicateException("Пользователь с таким email  уже существует");
         }
+        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
     }
 
     @Override
@@ -55,12 +54,12 @@ public class UserServiceDb implements UserService {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
-            if(userRepository.findByEmailAndIdNot(userDto.getEmail(), id).isPresent()){
+            if (userRepository.findByEmailAndIdNot(userDto.getEmail(), id).isPresent()) {
                 throw new DuplicateException("Пользователь с таким email  уже существует");
             }
             user.setEmail(userDto.getEmail());
         }
-            return UserMapper.toUserDto(userRepository.save(user));
+        return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
