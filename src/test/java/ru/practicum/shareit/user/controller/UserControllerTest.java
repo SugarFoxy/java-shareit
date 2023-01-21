@@ -52,8 +52,9 @@ class UserControllerTest {
         userUpdateInvalidEmail = new User(7L, null, "invalid.email");
     }
 
+    @SneakyThrows
     @Test
-    void createUser_whenUserCorrect_thenReturnedOk() throws Exception {
+    void createUser_whenUserCorrect_thenReturnedOk() {
         UserDto userDto = UserMapper.toUserDto(userCorrect);
         when(userService.createUser(userDto)).thenReturn(userDto);
 
@@ -68,8 +69,9 @@ class UserControllerTest {
         assertEquals(objectMapper.writeValueAsString(userDto), result);
     }
 
+    @SneakyThrows
     @Test
-    void createUser_whenEmailDuplication_thenThrow() throws Exception {
+    void createUser_whenEmailDuplication_thenThrow() {
         UserDto userDtoDuplication = UserMapper.toUserDto(userDuplicateEmail);
         when(userService.createUser(userDtoDuplication))
                 .thenThrow(new DuplicateException("Пользователь с таким email  уже существует"));
@@ -85,8 +87,9 @@ class UserControllerTest {
         assertEquals("{\"error\":\"Пользователь с таким email  уже существует\"}", result);
     }
 
+    @SneakyThrows
     @Test
-    void createUser_whenNoEmail_thenReturnedBadRequest() throws Exception {
+    void createUser_whenNoEmail_thenReturnedBadRequest() {
         UserDto userDtoNoEmail = UserMapper.toUserDto(userNoEmail);
 
         mockMvc.perform(post("/users")
@@ -97,8 +100,9 @@ class UserControllerTest {
         verify(userService, never()).createUser(any());
     }
 
+    @SneakyThrows
     @Test
-    void createUser_whenEmailInvalid_thenReturnedBadRequest() throws Exception {
+    void createUser_whenEmailInvalid_thenReturnedBadRequest() {
         UserDto userDtoInvalidEmail = UserMapper.toUserDto(userInvalidEmail);
 
         mockMvc.perform(post("/users")
@@ -109,8 +113,9 @@ class UserControllerTest {
         verify(userService, never()).createUser(any());
     }
 
+    @SneakyThrows
     @Test
-    void updateUser_whenUserCorrect_thenReturnedOk() throws Exception {
+    void updateUser_whenUserCorrect_thenReturnedOk() {
         UserDto userDtoToUpdate = UserMapper.toUserDto(user);
         when(userService.updateUser(userDtoToUpdate, 1L)).thenReturn(userDtoToUpdate);
 
@@ -125,8 +130,9 @@ class UserControllerTest {
         assertEquals(objectMapper.writeValueAsString(userDtoToUpdate), result);
     }
 
+    @SneakyThrows
     @Test
-    void updateUser_whenEmailDuplication_thenThrow() throws Exception {
+    void updateUser_whenEmailDuplication_thenThrow() {
         UserDto userDtoDuplication = UserMapper.toUserDto(userDuplicateEmail);
         when(userService.updateUser(userDtoDuplication, 1L))
                 .thenThrow(new DuplicateException("Пользователь с таким email  уже существует"));
@@ -143,8 +149,9 @@ class UserControllerTest {
         verify(userService).updateUser(userDtoDuplication, 1L);
     }
 
+    @SneakyThrows
     @Test
-    void updateUser_whenEmailInvalid_thenReturnedBadRequest() throws Exception {
+    void updateUser_whenEmailInvalid_thenReturnedBadRequest() {
         UserDto userDtoInvalidEmail = UserMapper.toUserDto(userUpdateInvalidEmail);
 
         mockMvc.perform(patch("/users/{userId}", 1)

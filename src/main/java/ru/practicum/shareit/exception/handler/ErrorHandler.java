@@ -39,7 +39,7 @@ public class ErrorHandler {
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handle(final MissingObjectException e) {
-        Map<String, String> error = Map.of("error", "e.getMessage()");
+        Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
         return error;
     }
