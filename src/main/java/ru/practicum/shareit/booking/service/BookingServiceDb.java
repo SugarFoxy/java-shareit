@@ -162,7 +162,7 @@ public class BookingServiceDb implements BookingService {
     private void isTheTimeCorrect(BookingInputDto bookingInputDto) {
         if (bookingInputDto.getStart().isBefore(LocalDateTime.now())
                 || bookingInputDto.getEnd().isBefore(LocalDateTime.now())) {
-            throw new InvalidRequestException("Начало или конец бронирования не могу быть в будующем");
+            throw new InvalidRequestException("Начало и конец бронирования не могу быть в прошлом");
         }
         if (bookingInputDto.getEnd().isBefore(bookingInputDto.getStart())) {
             throw new InvalidRequestException("Конец бронирования не может быть раньше начала");

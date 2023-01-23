@@ -16,8 +16,6 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBooker(User booker, Pageable pageable);
-
-    List<Booking> findByBooker(User booker);
     List<Booking> findByBookerAndEndIsBefore(User booker, LocalDateTime end, Pageable pageable);
 
     List<Booking> findByBookerAndStartIsAfter(User booker, LocalDateTime start, Pageable pageable);
