@@ -71,7 +71,6 @@ public class CustomPageRequest extends PageRequest {
     }
 
     private static void validatePaging(Integer from, Integer size) {
-        if (from == null && size == null) return;
         if (from == null || size == null) throw new InvalidRequestException("Некоректные данные пагинации");
         if (size <= 0) throw new InvalidRequestException("размер страницы не может быть меньше 1");
         if (from < 0) throw new InvalidRequestException("элемент не может быть меньше 0");

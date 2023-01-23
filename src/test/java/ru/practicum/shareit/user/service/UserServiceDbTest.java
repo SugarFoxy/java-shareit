@@ -123,12 +123,18 @@ class UserServiceDbTest {
 
     @Test
     void updateUser_whenUserNorFound_thenThrownException() {
-        UserDto user = UserDto.builder()
-                .id(1L)
-                .name("user_old")
-                .email("user_old@yandex.ru").build();
-        when(userRepository.findById(eq(1L))).thenThrow(new MissingObjectException("Невозможно изменить. Пользователь отсутствует!"));
+        assertThrows(
+                MissingObjectException.class,
+                () -> {
+                    when(userRepository.findById(eq(123L))).thenReturn(Optional.empty());
+                    userServiceDb.getUserById(123L);
+                }
+        );
+    }
 
-        assertThrows(MissingObjectException.class, ()->userServiceDb.updateUser(user, 1L));
+    @Test
+    public void deleteUserById_deletes() {
+        userServiceDb.deleteUser(0L);
+        verify(userRepository).deleteById(0L);
     }
 }

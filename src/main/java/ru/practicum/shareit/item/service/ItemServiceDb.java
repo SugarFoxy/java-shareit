@@ -102,7 +102,10 @@ public class ItemServiceDb implements ItemService, CommentService {
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        List<CommentDto> comments = commentRepository.findByItemId(itemId).stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
+        return ItemMapper.toItemDto(itemRepository.save(item),comments);
     }
 
     @Override
@@ -110,27 +113,18 @@ public class ItemServiceDb implements ItemService, CommentService {
         log.info("Получен запрос на добавление коммента");
         Item item = getItem(itemId);
         User author = getUser(authorId);
-        isBooker(item, author);
-        isTheBookingCompleted(item, author);
+        if (!isBooker(item, author)) {
+            throw new InvalidRequestException("Невозможно оставить комментарий.Пльзователь никогда ее не бронировал");
+        }
         commentDto.setCreated(LocalDateTime.now());
         Comment comment = CommentMapper.toComment(commentDto, author, item);
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
-    private void isBooker(Item item, User user) {
-        boolean isBooker = bookingRepository.findByBooker(user).stream()
-                .anyMatch(booking -> booking.getItem().equals(item));
-        if (!isBooker) {
-            throw new InvalidRequestException("Невозможно оставить комментарий.Пльзователь никогда ее не бронировал");
-        }
-    }
-
-    private void isTheBookingCompleted(Item item, User user) {
-        boolean isEnd = bookingRepository.findByBookerAndItem(user, item).stream()
+    private boolean isBooker(Item item, User user) {
+        return bookingRepository.findByBookerAndItem(user, item)
+                .stream()
                 .anyMatch((booking) -> booking.getEnd().isBefore(LocalDateTime.now()));
-        if (!isEnd) {
-            throw new InvalidRequestException("Невозможно оставить коммент.Бронирование не завершено");
-        }
     }
 
     private User getUser(Long userId) {
