@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.exception.InvalidRequestException;
 
 public class CustomPageRequest extends PageRequest {
+
     private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
 
     private final int offset;
@@ -71,9 +72,11 @@ public class CustomPageRequest extends PageRequest {
     }
 
     private static void validatePaging(Integer from, Integer size) {
-        if (from == null || size == null) throw new InvalidRequestException("Некоректные данные пагинации");
-        if (size <= 0) throw new InvalidRequestException("размер страницы не может быть меньше 1");
-        if (from < 0) throw new InvalidRequestException("элемент не может быть меньше 0");
+        if (from == null && size == null) return;
+        if (from == null || size == null) throw new InvalidRequestException("must provide both from and size or no one");
+        if (size <= 0) throw new InvalidRequestException("size must be positive");
+        if (from < 0) throw new InvalidRequestException("from must be positive or 0");
     }
 }
 
+//InvalidRequestException

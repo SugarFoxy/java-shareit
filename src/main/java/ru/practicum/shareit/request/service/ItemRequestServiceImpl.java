@@ -47,7 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllRequests(Long userId, Integer from, Integer size) {
         return requestRepository.findByRequestorNot(getUser(userId),
-                        CustomPageRequest.of(from, size, Sort.by("created").descending())).stream()
+                        CustomPageRequest.create(from, size, Sort.by("created").descending())).stream()
                 .map(request -> toItemRequestDto(request, getAnswers(request)))
                 .collect(Collectors.toList());
     }

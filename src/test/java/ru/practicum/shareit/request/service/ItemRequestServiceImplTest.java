@@ -3,10 +3,7 @@ package ru.practicum.shareit.request.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -45,10 +42,6 @@ class ItemRequestServiceImplTest {
     UserRepository userRepository;
     @Mock
     ItemRequestRepository requestRepository;
-
-    @Captor
-    ArgumentCaptor<CustomPageRequest> pageCaptor;
-
     ItemRequestDto itemRequestDto;
     ItemRequest request;
     Item item;
@@ -90,8 +83,7 @@ class ItemRequestServiceImplTest {
                 .requestor(requestor)
                 .build();
 
-        when(requestRepository.save(any())).thenAnswer(input -> input.getArguments()[0]);
-    }
+        when(requestRepository.save(any())).thenAnswer(input -> input.getArguments()[0]);    }
 
     @Test
     void addRequest_whenRequestorNotFound_thenThrowException() {
@@ -170,15 +162,39 @@ class ItemRequestServiceImplTest {
 
         List<ItemRequestDto> result = requestService.getAllRequests(2L, null, null);
 
-        verify(requestRepository).findByRequestorNot(any(), pageCaptor.capture());
-        CustomPageRequest pageable = pageCaptor.getValue();
+        ArgumentCaptor<CustomPageRequest> captor =ArgumentCaptor.forClass(CustomPageRequest.class);
+        verify(requestRepository).findByRequestorNot(any(), captor.capture());
+        CustomPageRequest pageable = captor.getValue();
         assertEquals( 6, result.size());
         assertEquals(0L, pageable.getOffset());
         assertEquals(Integer.MAX_VALUE, pageable.getPageSize());
     }
 
     @Test
+    public void getAllRequests_whenFromAndSizeFound_thenGetList() {
+        List<ItemRequest> requestsInDb = new ArrayList<>();
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(requestor));
+        when(requestRepository.findByRequestorNot(any(), any())).thenReturn(requestsInDb);
+        List<ItemRequestDto> result = requestService.getAllRequests(2L, 1, 4);
+
+
+        ArgumentCaptor<CustomPageRequest> captor = ArgumentCaptor.forClass(CustomPageRequest.class);
+        verify(requestRepository).findByRequestorNot(any(), captor.capture());
+        CustomPageRequest pageable = captor.getValue();
+        assertFalse(result.isEmpty());
+        assertEquals( 1L, pageable.getOffset());
+        assertEquals( 4, pageable.getPageSize());
+    }
+
+    @Test
     void getRequestsByUser() {
+
     }
 
     private ItemRequest getMockItemRequest() {
