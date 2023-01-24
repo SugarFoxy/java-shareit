@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import ru.practicum.shareit.booking.dto.model.Booking;
-import ru.practicum.shareit.booking.dto.model.BookingStatus;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.InvalidRequestException;
 import ru.practicum.shareit.exception.MissingObjectException;
@@ -48,7 +48,6 @@ public class ItemServiceDbTest {
 
     @InjectMocks
     private ItemServiceDb itemServiceDb;
-
     @Mock
     private ItemRepository itemRepository;
     @Mock

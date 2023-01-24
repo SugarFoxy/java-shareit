@@ -207,6 +207,46 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
+    void getAllBookings_whenStateNotCorrect_thenReturnedClientError() {
+        LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("state", "UNCORRECT");
+        requestParams.add("from", "0");
+        requestParams.add("size", "10");
+        when(bookingService.getAllBookings(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+
+        String result = mockMvc.perform(get("/bookings", 1)
+                        .params(requestParams)
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(status().is4xxClientError())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertEquals("{\"error\":\"Unknown state: UNSUPPORTED_STATUS\"}", result);
+    }
+
+    @SneakyThrows
+    @Test
+    void getAllBookingsForOwner_whenStateNotCorrect_thenReturnedClientError() {
+        LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("state", "UNCORRECT");
+        requestParams.add("from", "0");
+        requestParams.add("size", "10");
+        when(bookingService.getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+
+        String result = mockMvc.perform(get("/bookings/owner", 1)
+                        .params(requestParams)
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(status().is4xxClientError())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertEquals("{\"error\":\"Unknown state: UNSUPPORTED_STATUS\"}", result);
+    }
+
+    @SneakyThrows
+    @Test
     void getAllBookingsForOwner_whenRequestCorrect_thenReturnedOk() {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("state", "CURRENT");
