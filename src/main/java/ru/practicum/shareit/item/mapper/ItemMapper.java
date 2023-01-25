@@ -69,7 +69,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemForRequestDto toItemForRequestDto(Item item){
+    public static ItemForRequestDto toItemForRequestDto(Item item) {
         return ItemForRequestDto.builder()
                 .id(item.getId())
                 .name(item.getName())
