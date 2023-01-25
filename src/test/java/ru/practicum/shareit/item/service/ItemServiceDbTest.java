@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
@@ -31,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -73,7 +73,7 @@ public class ItemServiceDbTest {
             .name("name").description("desc")
             .available(true)
             .comments(new ArrayList<>())
-            .owner(owner)
+            .owner(User.builder().id(1L).name("name").email("name@mail.ru").build())
             .lastBooking(null)
             .nextBooking(null)
             .requestId(null)
@@ -82,6 +82,7 @@ public class ItemServiceDbTest {
     private final Item outRep = Item.builder()
             .id(ITEM_ID)
             .name("test").description("test")
+            .owner(User.builder().id(1L).name("name").email("name@mail.ru").build())
             .available(false)
             .request(null)
             .build();
@@ -185,6 +186,34 @@ public class ItemServiceDbTest {
     }
 
     @Test
+    void getItemById_whenUserNotOwner_thenThrowException() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(outRep));
+        ItemDto result = itemServiceDb.getItemById(1L, 2L);
+
+        assertNull(result.getLastBooking());
+        assertNull(result.getNextBooking());
+    }
+
+    @Test
+    void getItemById_whenUserOwner_thenThrowException() {
+        Booking booking = Booking.builder()
+                .id(1L)
+                .status(BookingStatus.APPROVED)
+                .item(item)
+                .start(LocalDateTime.now())
+                .end(LocalDateTime.now())
+                .booker(new User())
+                .build();
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(outRep));
+        when(bookingRepository.findByItemAndEndIsBefore(any(), any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByItemAndStartIsAfter(any(), any())).thenReturn(List.of(booking));
+        ItemDto result = itemServiceDb.getItemById(1L, 1L);
+
+        assertEquals(BookingMapper.toDateBookingDto(booking), result.getLastBooking());
+        assertEquals(BookingMapper.toDateBookingDto(booking), result.getNextBooking());
+    }
+
+    @Test
     void creatItem_whenCorrect_thenSave() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         itemServiceDb.creatItem(OWNER_ID, input);
@@ -230,7 +259,7 @@ public class ItemServiceDbTest {
 
         assertThrows(
                 OtherDataException.class,
-                () ->itemServiceDb.updateItem(1L, input, ITEM_ID));
+                () -> itemServiceDb.updateItem(1L, input, ITEM_ID));
 
         verify(itemRepository, never()).save(any());
     }
@@ -275,7 +304,7 @@ public class ItemServiceDbTest {
 
         assertThrows(
                 MissingObjectException.class,
-                () ->itemServiceDb.addComment(ITEM_ID, 1L, new CommentDto()));
+                () -> itemServiceDb.addComment(ITEM_ID, 1L, new CommentDto()));
 
         verify(commentRepository, never()).save(any());
     }
@@ -300,7 +329,7 @@ public class ItemServiceDbTest {
 
         assertThrows(
                 InvalidRequestException.class,
-                () ->  itemServiceDb.addComment(ITEM_ID, 1L, new CommentDto()));
+                () -> itemServiceDb.addComment(ITEM_ID, 1L, new CommentDto()));
 
         verify(commentRepository, never()).save(any());
     }

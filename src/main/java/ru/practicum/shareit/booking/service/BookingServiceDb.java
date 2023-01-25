@@ -134,7 +134,7 @@ public class BookingServiceDb implements BookingService {
                 return convertBookings(bookingRepository.findByOwnerAndStatus(owner, BookingStatus.REJECTED, pageable));
         }
 
-        throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
+        throw new UnknownStateException("Unknown state: UNSUPPORTED_STATUS");
     }
 
     private List<BookingOutputDto> convertBookings(List<Booking> bookings) {

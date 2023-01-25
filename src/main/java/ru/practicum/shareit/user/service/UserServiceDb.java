@@ -54,7 +54,7 @@ public class UserServiceDb implements UserService {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
-            if (userRepository.findByEmailAndIdNot(userDto.getEmail(), id).isPresent()) {
+            if (userRepository.existsByEmail(userDto.getEmail())) {
                 throw new DuplicateException("Пользователь с таким email  уже существует");
             }
             user.setEmail(userDto.getEmail());

@@ -122,6 +122,17 @@ class UserServiceDbTest {
     }
 
     @Test
+    void updateUser_whenDuplicateEmail_thenThrowException() {
+        User user = User.builder().id(1L).name("user").email("user@mail.ru").build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
+        when(userRepository.existsByEmail(any())).thenReturn(true);
+
+        assertThrows(DuplicateException.class,()->userServiceDb.updateUser(UserMapper.toUserDto(user),1L));
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
     void updateUser_whenUserNorFound_thenThrownException() {
         assertThrows(
                 MissingObjectException.class,

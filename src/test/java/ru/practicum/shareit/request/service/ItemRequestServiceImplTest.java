@@ -3,7 +3,9 @@ package ru.practicum.shareit.request.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -83,7 +85,8 @@ class ItemRequestServiceImplTest {
                 .requestor(requestor)
                 .build();
 
-        when(requestRepository.save(any())).thenAnswer(input -> input.getArguments()[0]);    }
+        when(requestRepository.save(any())).thenAnswer(input -> input.getArguments()[0]);
+    }
 
     @Test
     void addRequest_whenRequestorNotFound_thenThrowException() {
@@ -162,10 +165,10 @@ class ItemRequestServiceImplTest {
 
         List<ItemRequestDto> result = requestService.getAllRequests(2L, null, null);
 
-        ArgumentCaptor<CustomPageRequest> captor =ArgumentCaptor.forClass(CustomPageRequest.class);
+        ArgumentCaptor<CustomPageRequest> captor = ArgumentCaptor.forClass(CustomPageRequest.class);
         verify(requestRepository).findByRequestorNot(any(), captor.capture());
         CustomPageRequest pageable = captor.getValue();
-        assertEquals( 6, result.size());
+        assertEquals(6, result.size());
         assertEquals(0L, pageable.getOffset());
         assertEquals(Integer.MAX_VALUE, pageable.getPageSize());
     }
@@ -188,15 +191,36 @@ class ItemRequestServiceImplTest {
         verify(requestRepository).findByRequestorNot(any(), captor.capture());
         CustomPageRequest pageable = captor.getValue();
         assertFalse(result.isEmpty());
-        assertEquals( 1L, pageable.getOffset());
-        assertEquals( 4, pageable.getPageSize());
+        assertEquals(1L, pageable.getOffset());
+        assertEquals(4, pageable.getPageSize());
     }
 
     @Test
-    void getRequestsByUser() {
+    void getRequestsByUser_whenUserNotFound_thenThrowException() {
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
 
+        assertThrows(MissingObjectException.class, () -> requestService.getRequestsByUser(1L));
+
+        verify(itemRepository, never()).findByRequest(any());
     }
 
+
+    @Test
+    void getRequestsByUser_whenCorrect_thenReturnedList() {
+        List<ItemRequest> requestsInDb = new ArrayList<>();
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        requestsInDb.add(getMockItemRequest());
+        when(userRepository.findById(any())).thenReturn(Optional.of(requestor));
+        when(requestRepository.findByRequestor(any())).thenReturn(requestsInDb);
+        when(itemRepository.findByRequest(any())).thenReturn(List.of(item));
+
+        List<ItemRequestDto> result = requestService.getRequestsByUser(2L);
+
+        verify(itemRepository, times(3)).findByRequest(any());
+
+        assertEquals(requestsInDb.size(), result.size());
+    }
     private ItemRequest getMockItemRequest() {
         ItemRequest mock = mock(ItemRequest.class);
         when(mock.getRequestor()).thenReturn(owner);

@@ -69,10 +69,7 @@ public class ItemServiceDb implements ItemService, CommentService {
     public ItemDto getItemById(Long itemId, Long userId) {
         log.info("Получен запрос на получение вещи");
         Item item = getItem(itemId);
-        return ItemMapper.toItemDto(item,
-                getComments(itemId),
-                getLastBooking(item, userId),
-                getNextBooking(item, userId));
+        return fillItemDto(item,userId);
     }
 
     @Override
@@ -166,7 +163,9 @@ public class ItemServiceDb implements ItemService, CommentService {
     }
 
     private DateBookingDto getNextBooking(Item item, Long userId) {
-        if (!item.getOwner().getId().equals(userId)) return null;
+        if (!item.getOwner().getId().equals(userId)){
+            return null;
+        }
         List<Booking> bookings = bookingRepository.findByItemAndStartIsAfter(item, LocalDateTime.now());
         if (bookings.isEmpty()) {
             return null;

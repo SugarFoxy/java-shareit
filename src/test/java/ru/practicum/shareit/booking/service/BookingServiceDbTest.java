@@ -13,12 +13,10 @@ import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.booking.state.BookingState;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.InvalidRequestException;
 import ru.practicum.shareit.exception.MissingObjectException;
 import ru.practicum.shareit.exception.OtherDataException;
-import ru.practicum.shareit.exception.UnknownStateException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -68,10 +66,10 @@ class BookingServiceDbTest {
 
     @BeforeEach
     public void before() {
-        owner =User.builder().id(1L).name("name").email("email.@mail.ru").build();
+        owner = User.builder().id(1L).name("name").email("email.@mail.ru").build();
         booker = User.builder().id(2L).name("name2").email("email2.@mail.ru").build();
         trespasser = User.builder().id(3L).name("name3").email("email3.@mail.ru").build();
-        item =Item.builder()
+        item = Item.builder()
                 .id(2L)
                 .available(true)
                 .owner(owner)
@@ -175,7 +173,7 @@ class BookingServiceDbTest {
                 .build()));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
 
-        bookingServiceDb.createBooking(input,2L);
+        bookingServiceDb.createBooking(input, 2L);
 
         verify(bookingRepository).save(any());
     }
@@ -185,7 +183,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(MissingObjectException.class,
-                ()-> bookingServiceDb.updateApprove(1L,true,1L));
+                () -> bookingServiceDb.updateApprove(1L, true, 1L));
 
         verify(bookingRepository, never()).save(any());
     }
@@ -196,7 +194,7 @@ class BookingServiceDbTest {
         when(userRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(MissingObjectException.class,
-                ()-> bookingServiceDb.updateApprove(1L,true,1L));
+                () -> bookingServiceDb.updateApprove(1L, true, 1L));
 
         verify(bookingRepository, never()).save(any());
     }
@@ -207,7 +205,7 @@ class BookingServiceDbTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(booker));
 
         assertThrows(OtherDataException.class,
-                ()-> bookingServiceDb.updateApprove(1L,true,2L));
+                () -> bookingServiceDb.updateApprove(1L, true, 2L));
 
         verify(bookingRepository, never()).save(any());
     }
@@ -219,7 +217,7 @@ class BookingServiceDbTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(owner));
 
         assertThrows(InvalidRequestException.class,
-                ()-> bookingServiceDb.updateApprove(3L,true,1L));
+                () -> bookingServiceDb.updateApprove(3L, true, 1L));
 
         verify(bookingRepository, never()).save(any());
     }
@@ -229,7 +227,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(userRepository.findById(any())).thenReturn(Optional.of(owner));
 
-        BookingOutputDto result = bookingServiceDb.updateApprove(3L,true,1L);
+        BookingOutputDto result = bookingServiceDb.updateApprove(3L, true, 1L);
 
         verify(bookingRepository).save(any());
 
@@ -241,7 +239,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(userRepository.findById(any())).thenReturn(Optional.of(owner));
 
-        BookingOutputDto result = bookingServiceDb.updateApprove(3L,false,1L);
+        BookingOutputDto result = bookingServiceDb.updateApprove(3L, false, 1L);
 
         verify(bookingRepository).save(any());
 
@@ -253,16 +251,16 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(userRepository.findById(any())).thenReturn(Optional.of(owner));
 
-        BookingOutputDto result = bookingServiceDb.updateApprove(3L,true,1L);
+        BookingOutputDto result = bookingServiceDb.updateApprove(3L, true, 1L);
 
         verify(bookingRepository).save(any());
 
         assertEquals(BookingStatus.APPROVED, result.getStatus());
-        assertEquals(booking.getId(),result.getId());
-        assertEquals(booking.getItem(),result.getItem());
-        assertEquals(booking.getEnd(),result.getEnd());
+        assertEquals(booking.getId(), result.getId());
+        assertEquals(booking.getItem(), result.getItem());
+        assertEquals(booking.getEnd(), result.getEnd());
         assertEquals(booking.getStart(), result.getStart());
-        assertEquals(booking.getBooker(),result.getBooker());
+        assertEquals(booking.getBooker(), result.getBooker());
     }
 
     @Test
@@ -270,7 +268,7 @@ class BookingServiceDbTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(MissingObjectException.class,
-                () ->bookingServiceDb.getBookingInfo(3L,4L));
+                () -> bookingServiceDb.getBookingInfo(3L, 4L));
     }
 
     @Test
@@ -279,7 +277,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(MissingObjectException.class,
-                () ->bookingServiceDb.getBookingInfo(3L,1L));
+                () -> bookingServiceDb.getBookingInfo(3L, 1L));
     }
 
     @Test
@@ -288,7 +286,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
 
         assertThrows(OtherDataException.class,
-                () ->bookingServiceDb.getBookingInfo(3L,1L));
+                () -> bookingServiceDb.getBookingInfo(3L, 1L));
     }
 
     @Test
@@ -296,9 +294,9 @@ class BookingServiceDbTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
 
-        BookingOutputDto result = bookingServiceDb.getBookingInfo(3L,1L);
+        BookingOutputDto result = bookingServiceDb.getBookingInfo(3L, 1L);
 
-        assertEquals(BookingMapper.toBookingDto(booking),result);
+        assertEquals(BookingMapper.toBookingDto(booking), result);
     }
 
     @Test
@@ -306,9 +304,9 @@ class BookingServiceDbTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
 
-        BookingOutputDto result = bookingServiceDb.getBookingInfo(3L,1L);
+        BookingOutputDto result = bookingServiceDb.getBookingInfo(3L, 1L);
 
-        assertEquals(BookingMapper.toBookingDto(booking),result);
+        assertEquals(BookingMapper.toBookingDto(booking), result);
     }
 
     @Test
@@ -316,17 +314,17 @@ class BookingServiceDbTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(MissingObjectException.class,
-                ()-> bookingServiceDb.getAllBookings(3L, ALL,null,null));
+                () -> bookingServiceDb.getAllBookings(3L, ALL, null, null));
     }
 
     @Test
     void getAllBookings_whenStateALL_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByBooker(any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByBooker(any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, ALL,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, ALL, null, null);
 
-        verify(bookingRepository).findByBooker(any(),any());
+        verify(bookingRepository).findByBooker(any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -334,11 +332,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookings_whenStateCURRENT_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findCurrentByBooker(any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findCurrentByBooker(any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, CURRENT,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, CURRENT, null, null);
 
-        verify(bookingRepository).findCurrentByBooker(any(),any());
+        verify(bookingRepository).findCurrentByBooker(any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -346,11 +344,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookings_whenStatePAST_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByBookerAndEndIsBefore(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByBookerAndEndIsBefore(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, PAST,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, PAST, null, null);
 
-        verify(bookingRepository).findByBookerAndEndIsBefore(any(),any(),any());
+        verify(bookingRepository).findByBookerAndEndIsBefore(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -358,11 +356,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookings_whenStateFUTURE_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByBookerAndStartIsAfter(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByBookerAndStartIsAfter(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, FUTURE,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, FUTURE, null, null);
 
-        verify(bookingRepository).findByBookerAndStartIsAfter(any(),any(),any());
+        verify(bookingRepository).findByBookerAndStartIsAfter(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -370,11 +368,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookings_whenStateWAITING_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByBookerAndStatus(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByBookerAndStatus(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, WAITING,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, WAITING, null, null);
 
-        verify(bookingRepository).findByBookerAndStatus(any(),any(),any());
+        verify(bookingRepository).findByBookerAndStatus(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -382,17 +380,13 @@ class BookingServiceDbTest {
     @Test
     void getAllBookings_whenStateREJECTED_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByBookerAndStatus(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByBookerAndStatus(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, REJECTED,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookings(2L, REJECTED, null, null);
 
-        verify(bookingRepository).findByBookerAndStatus(any(),any(),any());
+        verify(bookingRepository).findByBookerAndStatus(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
-    }
-
-    @Test
-    void getAllBookingsForOwner() {
     }
 
     @Test
@@ -400,17 +394,17 @@ class BookingServiceDbTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(MissingObjectException.class,
-                ()-> bookingServiceDb.getAllBookingsForOwner(3L, ALL,null,null));
+                () -> bookingServiceDb.getAllBookingsForOwner(3L, ALL, null, null));
     }
 
     @Test
     void getAllBookingsForOwner_whenStateALL_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByOwner(any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByOwner(any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, ALL,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, ALL, null, null);
 
-        verify(bookingRepository).findByOwner(any(),any());
+        verify(bookingRepository).findByOwner(any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -418,11 +412,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookingsForOwner_whenStateCURRENT_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findCurrentByOwner(any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findCurrentByOwner(any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, CURRENT,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, CURRENT, null, null);
 
-        verify(bookingRepository).findCurrentByOwner(any(),any());
+        verify(bookingRepository).findCurrentByOwner(any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -430,11 +424,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookingsForOwner_whenStatePAST_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByOwnerAndEndIsBefore(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByOwnerAndEndIsBefore(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, PAST,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, PAST, null, null);
 
-        verify(bookingRepository).findByOwnerAndEndIsBefore(any(),any(),any());
+        verify(bookingRepository).findByOwnerAndEndIsBefore(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -442,11 +436,11 @@ class BookingServiceDbTest {
     @Test
     void getAllBookingsForOwner_whenStateFUTURE_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByOwnerAndStartIsAfter(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByOwnerAndStartIsAfter(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, FUTURE,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, FUTURE, null, null);
 
-        verify(bookingRepository).findByOwnerAndStartIsAfter(any(),any(),any());
+        verify(bookingRepository).findByOwnerAndStartIsAfter(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
@@ -454,23 +448,24 @@ class BookingServiceDbTest {
     @Test
     void getAllBookingsForOwner_whenStateWAITING_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByOwnerAndStatus(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByOwnerAndStatus(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, WAITING,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, WAITING, null, null);
 
-        verify(bookingRepository).findByOwnerAndStatus(any(),any(),any());
+        verify(bookingRepository).findByOwnerAndStatus(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }
 
+
     @Test
     void getAllBookingsForOwner_whenStateREJECTED_thenReturnedListBookingDto() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
-        when(bookingRepository.findByOwnerAndStatus(any(),any(),any())).thenReturn(List.of(booking));
+        when(bookingRepository.findByOwnerAndStatus(any(), any(), any())).thenReturn(List.of(booking));
 
-        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, REJECTED,null,null);
+        List<BookingOutputDto> result = bookingServiceDb.getAllBookingsForOwner(2L, REJECTED, null, null);
 
-        verify(bookingRepository).findByOwnerAndStatus(any(),any(),any());
+        verify(bookingRepository).findByOwnerAndStatus(any(), any(), any());
         assertFalse(result.isEmpty());
         assertEquals(BookingMapper.toBookingDto(booking), result.get(0));
     }

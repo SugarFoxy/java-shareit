@@ -15,12 +15,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.UnknownStateException;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -225,24 +228,16 @@ class BookingControllerTest {
         assertEquals("{\"error\":\"Unknown state: UNSUPPORTED_STATUS\"}", result);
     }
 
+
     @SneakyThrows
     @Test
-    void getAllBookingsForOwner_whenStateNotCorrect_thenReturnedClientError() {
-        LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-        requestParams.add("state", "UNCORRECT");
-        requestParams.add("from", "0");
-        requestParams.add("size", "10");
-        when(bookingService.getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+    public void getAllBookingsByUserIdUnsupportedStateTestFail() throws Exception {
+        when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt())).thenThrow( new UnknownStateException(""));
 
-        String result = mockMvc.perform(get("/bookings/owner", 1)
-                        .params(requestParams)
+        mockMvc.perform(get("/bookings?state=UNSUPPORTED&from=0&size=10")
                         .header("X-Sharer-User-Id", 1))
                 .andExpect(status().is4xxClientError())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        assertEquals("{\"error\":\"Unknown state: UNSUPPORTED_STATUS\"}", result);
+                .andExpect(jsonPath("$.error", is("Unknown state: UNSUPPORTED_STATUS")));
     }
 
     @SneakyThrows
