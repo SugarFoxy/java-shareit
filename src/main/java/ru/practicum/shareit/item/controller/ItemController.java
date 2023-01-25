@@ -30,9 +30,7 @@ public class ItemController {
     @GetMapping
     public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
                                         @RequestParam(required = false) Integer from,
-                                        @RequestParam(required = false) Integer size)
-
-    {
+                                        @RequestParam(required = false) Integer size) {
         return itemService.getItemsByUser(userId,from,size);
     }
 
