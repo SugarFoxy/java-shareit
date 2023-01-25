@@ -180,7 +180,7 @@ public class BookingRepositoryTest {
 
     @Test
     void findByOwnerAndStatus() {
-        List<Booking> result = bookingRepository.findByOwnerAndStatus(secondUser, REJECTED ,pageable);
+        List<Booking> result = bookingRepository.findByOwnerAndStatus(secondUser, REJECTED, pageable);
         assertThat(result, hasItems(firstBooking));
         assertThat(result, not(hasItems(secondBooking,thirdBooking)));
     }
