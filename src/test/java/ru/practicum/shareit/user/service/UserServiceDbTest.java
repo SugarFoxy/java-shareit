@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,7 +81,6 @@ class UserServiceDbTest {
 
         UserDto userDto = userServiceDb.createUser(UserMapper.toUserDto(user));
 
-        verify(userRepository).existsByEmail(user.getEmail());
         verify(userRepository).save(user);
         assertEquals(UserMapper.toUserDto(user), userDto);
     }
@@ -94,13 +92,12 @@ class UserServiceDbTest {
                 .id(userId)
                 .email("user@mail.ru")
                 .name("user").build();
-        when(userRepository.existsByEmail(anyString())).thenReturn(true);
+        when(userRepository.save(any()))
+                .thenThrow(new DuplicateException("Пользователь с таким email  уже существует"));
 
         assertThrows(DuplicateException.class,
                 () -> userServiceDb.createUser(UserMapper.toUserDto(user)));
-
-        verify(userRepository).existsByEmail(user.getEmail());
-        verify(userRepository, never()).save(user);
+        verify(userRepository).save(user);
     }
 
     @Test

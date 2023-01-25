@@ -38,10 +38,11 @@ public class UserServiceDb implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         log.info("Получен запрос на создание пользователя");
-        if (userRepository.existsByEmail(userDto.getEmail())) {
+        try {
+            return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
+        } catch (Exception e) {
             throw new DuplicateException("Пользователь с таким email  уже существует");
         }
-        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
     }
 
     @Override
