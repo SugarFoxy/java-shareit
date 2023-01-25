@@ -115,7 +115,7 @@ class UserServiceDbTest {
                 .build();
         userServiceDb.updateUser(userDto, 1L);
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class );
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
         User capturedUser = captor.getValue();
         assertEquals("user_new", capturedUser.getName());
