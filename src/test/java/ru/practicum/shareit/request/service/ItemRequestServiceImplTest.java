@@ -204,7 +204,6 @@ class ItemRequestServiceImplTest {
         verify(itemRepository, never()).findByRequest(any());
     }
 
-
     @Test
     void getRequestsByUser_whenCorrect_thenReturnedList() {
         List<ItemRequest> requestsInDb = new ArrayList<>();
@@ -221,6 +220,7 @@ class ItemRequestServiceImplTest {
 
         assertEquals(requestsInDb.size(), result.size());
     }
+
     private ItemRequest getMockItemRequest() {
         ItemRequest mock = mock(ItemRequest.class);
         when(mock.getRequestor()).thenReturn(owner);

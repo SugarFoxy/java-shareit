@@ -23,8 +23,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookingController.class)
@@ -96,14 +96,14 @@ class BookingControllerTest {
         when(bookingService.updateApprove(1L, true, 1L)).thenReturn(bookingOut);
 
         String result = mockMvc.perform(patch("/bookings/{bookingId}", 1)
-                        .param("approved","true")
+                        .param("approved", "true")
                         .header("X-Sharer-User-Id", 1))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService, times(1)).updateApprove(anyLong(),anyBoolean(), anyLong());
+        verify(bookingService, times(1)).updateApprove(anyLong(), anyBoolean(), anyLong());
         assertEquals(objectMapper.writeValueAsString(bookingOut), result);
     }
 
@@ -114,17 +114,17 @@ class BookingControllerTest {
                         .header("X-Sharer-User-Id", 1))
                 .andExpect(status().is4xxClientError());
 
-        verify(bookingService, never()).updateApprove(anyLong(),anyBoolean(), anyLong());
+        verify(bookingService, never()).updateApprove(anyLong(), anyBoolean(), anyLong());
     }
 
     @SneakyThrows
     @Test
     void approve_whenNotUserID_thenReturnedClientError() {
-      mockMvc.perform(patch("/bookings/{bookingId}", 1)
-                        .param("approved","true"))
+        mockMvc.perform(patch("/bookings/{bookingId}", 1)
+                        .param("approved", "true"))
                 .andExpect(status().is4xxClientError());
 
-        verify(bookingService, never()).updateApprove(anyLong(),anyBoolean(), anyLong());
+        verify(bookingService, never()).updateApprove(anyLong(), anyBoolean(), anyLong());
 
     }
 
@@ -140,7 +140,7 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService).getBookingInfo(anyLong(),anyLong());
+        verify(bookingService).getBookingInfo(anyLong(), anyLong());
         assertEquals(objectMapper.writeValueAsString(bookingOut), result);
     }
 
@@ -150,7 +150,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings/{bookingId}", 1))
                 .andExpect(status().is4xxClientError());
 
-        verify(bookingService, never()).getBookingInfo(anyLong(),anyLong());
+        verify(bookingService, never()).getBookingInfo(anyLong(), anyLong());
     }
 
     @SneakyThrows
@@ -160,7 +160,7 @@ class BookingControllerTest {
         requestParams.add("state", "CURRENT");
         requestParams.add("from", "0");
         requestParams.add("size", "10");
-        when(bookingService.getAllBookings(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+        when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt())).thenReturn(List.of(bookingOut));
 
         String result = mockMvc.perform(get("/bookings", 1)
                         .params(requestParams)
@@ -170,7 +170,7 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService).getAllBookings(anyLong(),any(),anyInt(),anyInt());
+        verify(bookingService).getAllBookings(anyLong(), any(), anyInt(), anyInt());
         assertEquals(objectMapper.writeValueAsString(List.of(bookingOut)), result);
     }
 
@@ -180,7 +180,7 @@ class BookingControllerTest {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("from", "0");
         requestParams.add("size", "10");
-        when(bookingService.getAllBookings(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+        when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt())).thenReturn(List.of(bookingOut));
 
         String result = mockMvc.perform(get("/bookings", 1)
                         .params(requestParams)
@@ -190,7 +190,7 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService).getAllBookings(anyLong(),any(),anyInt(),anyInt());
+        verify(bookingService).getAllBookings(anyLong(), any(), anyInt(), anyInt());
         assertEquals(objectMapper.writeValueAsString(List.of(bookingOut)), result);
     }
 
@@ -205,7 +205,7 @@ class BookingControllerTest {
                         .params(requestParams))
                 .andExpect(status().is4xxClientError());
 
-        verify(bookingService, never()).getAllBookings(anyLong(),any(),anyInt(),anyInt());
+        verify(bookingService, never()).getAllBookings(anyLong(), any(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -215,7 +215,7 @@ class BookingControllerTest {
         requestParams.add("state", "UNCORRECT");
         requestParams.add("from", "0");
         requestParams.add("size", "10");
-        when(bookingService.getAllBookings(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+        when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt())).thenReturn(List.of(bookingOut));
 
         String result = mockMvc.perform(get("/bookings", 1)
                         .params(requestParams)
@@ -232,7 +232,8 @@ class BookingControllerTest {
     @SneakyThrows
     @Test
     public void getAllBookingsByUserIdUnsupportedStateTestFail() throws Exception {
-        when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt())).thenThrow( new UnknownStateException(""));
+        when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt()))
+                .thenThrow(new UnknownStateException(""));
 
         mockMvc.perform(get("/bookings?state=UNSUPPORTED&from=0&size=10")
                         .header("X-Sharer-User-Id", 1))
@@ -247,7 +248,7 @@ class BookingControllerTest {
         requestParams.add("state", "CURRENT");
         requestParams.add("from", "0");
         requestParams.add("size", "10");
-        when(bookingService.getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+        when(bookingService.getAllBookingsForOwner(anyLong(), any(), anyInt(), anyInt())).thenReturn(List.of(bookingOut));
 
         String result = mockMvc.perform(get("/bookings/owner", 1)
                         .params(requestParams)
@@ -257,7 +258,7 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService).getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt());
+        verify(bookingService).getAllBookingsForOwner(anyLong(), any(), anyInt(), anyInt());
         assertEquals(objectMapper.writeValueAsString(List.of(bookingOut)), result);
     }
 
@@ -267,7 +268,7 @@ class BookingControllerTest {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("from", "0");
         requestParams.add("size", "10");
-        when(bookingService.getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt())).thenReturn(List.of(bookingOut));
+        when(bookingService.getAllBookingsForOwner(anyLong(), any(), anyInt(), anyInt())).thenReturn(List.of(bookingOut));
 
         String result = mockMvc.perform(get("/bookings/owner", 1)
                         .params(requestParams)
@@ -277,7 +278,7 @@ class BookingControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(bookingService).getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt());
+        verify(bookingService).getAllBookingsForOwner(anyLong(), any(), anyInt(), anyInt());
         assertEquals(objectMapper.writeValueAsString(List.of(bookingOut)), result);
     }
 
@@ -292,6 +293,6 @@ class BookingControllerTest {
                         .params(requestParams))
                 .andExpect(status().is4xxClientError());
 
-        verify(bookingService, never()).getAllBookingsForOwner(anyLong(),any(),anyInt(),anyInt());
+        verify(bookingService, never()).getAllBookingsForOwner(anyLong(), any(), anyInt(), anyInt());
     }
 }

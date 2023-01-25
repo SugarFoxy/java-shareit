@@ -46,7 +46,7 @@ class UserServiceDbTest {
 
         List<UserDto> usersDto = userServiceDb.getUsers();
         verify(userRepository).findAll();
-        assertEquals(1,usersDto.size());
+        assertEquals(1, usersDto.size());
     }
 
     @Test
@@ -67,7 +67,8 @@ class UserServiceDbTest {
         Long userId = 0L;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(MissingObjectException.class,()-> userServiceDb.getUserById(userId));
+        assertThrows(MissingObjectException.class,
+                () -> userServiceDb.getUserById(userId));
     }
 
     @Test
@@ -83,7 +84,7 @@ class UserServiceDbTest {
 
         verify(userRepository).existsByEmail(user.getEmail());
         verify(userRepository).save(user);
-        assertEquals(UserMapper.toUserDto(user),userDto);
+        assertEquals(UserMapper.toUserDto(user), userDto);
     }
 
     @Test
@@ -95,7 +96,8 @@ class UserServiceDbTest {
                 .name("user").build();
         when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
-        assertThrows(DuplicateException.class,()-> userServiceDb.createUser(UserMapper.toUserDto(user)));
+        assertThrows(DuplicateException.class,
+                () -> userServiceDb.createUser(UserMapper.toUserDto(user)));
 
         verify(userRepository).existsByEmail(user.getEmail());
         verify(userRepository, never()).save(user);
@@ -113,11 +115,10 @@ class UserServiceDbTest {
                 .build();
         userServiceDb.updateUser(userDto, 1L);
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class );
         verify(userRepository).save(captor.capture());
-
         User capturedUser = captor.getValue();
-        assertEquals( "user_new", capturedUser.getName());
+        assertEquals("user_new", capturedUser.getName());
         assertEquals("user_new@yandex.ru", capturedUser.getEmail());
     }
 
@@ -127,7 +128,8 @@ class UserServiceDbTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
         when(userRepository.existsByEmail(any())).thenReturn(true);
 
-        assertThrows(DuplicateException.class,()->userServiceDb.updateUser(UserMapper.toUserDto(user),1L));
+        assertThrows(DuplicateException.class,
+                () -> userServiceDb.updateUser(UserMapper.toUserDto(user), 1L));
 
         verify(userRepository, never()).save(any());
     }
