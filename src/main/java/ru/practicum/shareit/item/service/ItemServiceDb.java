@@ -163,7 +163,7 @@ public class ItemServiceDb implements ItemService, CommentService {
     }
 
     private DateBookingDto getNextBooking(Item item, Long userId) {
-        if (!item.getOwner().getId().equals(userId)){
+        if (!item.getOwner().getId().equals(userId)) {
             return null;
         }
         List<Booking> bookings = bookingRepository.findByItemAndStartIsAfter(item, LocalDateTime.now());
