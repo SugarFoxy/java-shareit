@@ -38,14 +38,14 @@ public class BookingOutputDtoTest {
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.start").isNotBlank();
         assertThat(result).extractingJsonPathStringValue("$.end").isNotBlank();
-        assertThat(result).extractingJsonPathNumberValue("$.item.id").isEqualTo(11);
-        assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(111);
+        assertThat(result).extractingJsonPathNumberValue("$.item.id").isEqualTo(1);
+        assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.status").isEqualTo("APPROVED");
     }
 
     private Item createItem() {
         return new Item(
-                11L,
+                1L,
                 "My item",
                 "My item Description",
                 true,
@@ -56,7 +56,7 @@ public class BookingOutputDtoTest {
 
     private User createUser() {
         return new User(
-                111L,
+                1L,
                 "John Doe",
                 "john.doe@mail.com"
         );
