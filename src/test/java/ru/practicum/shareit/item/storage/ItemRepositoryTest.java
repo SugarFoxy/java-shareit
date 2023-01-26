@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.paging.CustomPageRequest;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
@@ -18,6 +17,9 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -32,22 +34,20 @@ public class ItemRepositoryTest {
     private ItemRequestRepository itemRequestRepository;
     private Pageable pageable;
     private User firstUser;
-    private User secondUser;
+    private ItemRequest firstRequest;
     private Item firstItem;
     private Item secondItem;
     private Item thirdItem;
-    private ItemRequest firstRequest;
-    private ItemRequest secondRequest;
 
     @BeforeEach
     public void beforeEach() {
         firstUser = userRepository.save(new User(1L, "Имя первого", "first@email.com"));
         testEntityManager.persist(firstUser);
-        secondUser = userRepository.save(new User(2L, "Имя второго", "second@email.com"));
+        User secondUser = userRepository.save(new User(2L, "Имя второго", "second@email.com"));
         testEntityManager.persist(secondUser);
         firstRequest = itemRequestRepository.save(new ItemRequest(1L, "Реквест на первый и второй", firstUser, LocalDateTime.now()));
         testEntityManager.persist(firstRequest);
-        secondRequest = itemRequestRepository.save(new ItemRequest(2L, "Реквест на третий", firstUser, LocalDateTime.now()));
+        ItemRequest secondRequest = itemRequestRepository.save(new ItemRequest(2L, "Реквест на третий", firstUser, LocalDateTime.now()));
         testEntityManager.persist(secondRequest);
         firstItem = itemRepository.save(new Item(1L, "Название первого", "Описание первого", true, firstUser, firstRequest));
         testEntityManager.persist(firstItem);
@@ -70,21 +70,24 @@ public class ItemRepositoryTest {
     public void findAllByOwnerTest() {
         List<Item> items = itemRepository.findByOwner(firstUser, pageable);
 
-        assertEquals(2, items.size());
+        assertThat(items, hasItems(firstItem, secondItem));
+        assertThat(items, not(hasItems(thirdItem)));
     }
 
     @Test
-    public void findAllByRequestIdTest() {
+    public void findAllByRequestTest() {
         List<Item> items = itemRepository.findByRequest(firstRequest);
 
-        assertEquals(2, items.size());
+        assertThat(items, hasItems(firstItem, secondItem));
+        assertThat(items, not(hasItems(thirdItem)));
     }
 
     @Test
     public void findByText() {
         List<Item> items = itemRepository.search("вТоРоГо", pageable);
 
-        assertEquals(1, items.size());
+        assertThat(items, hasItems(secondItem));
+        assertThat(items, not(hasItems(firstItem, thirdItem)));
     }
 
     @Test
