@@ -19,9 +19,6 @@ public class ItemDtoTest {
     private JacksonTester<ItemDto> jtItemDto;
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
-    private JacksonTester<ItemForRequestDto> jtItemDtoWithBooking;
-
     @Test
     public void itemDtoJsonTest() throws IOException {
         ItemDto itemDto = new ItemDto(1L,

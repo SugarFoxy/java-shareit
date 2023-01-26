@@ -38,21 +38,21 @@ class ItemControllerTest {
     private MockMvc mockMvc;
     @MockBean
     @Qualifier("itemServiceDb")
-    ItemService itemService;
+    private ItemService itemService;
     @MockBean
     @Qualifier("itemServiceDb")
-    CommentService commentService;
-    User user;
-    User incorrectOwner;
-    Item itemCorrect;
-    Item itemNullName;
-    Item itemNullDescription;
-    Item itemNullAvailable;
-    Item itemIncorrectOwner;
-    Item itemUpdate;
-    Item itemUpdateName;
-    Item itemUpdateDescription;
-    Item itemUpdateAvailable;
+    private CommentService commentService;
+    private User user;
+    private User incorrectOwner;
+    private Item itemCorrect;
+    private Item itemNullName;
+    private Item itemNullDescription;
+    private Item itemNullAvailable;
+    private Item itemIncorrectOwner;
+    private Item itemUpdate;
+    private Item itemUpdateName;
+    private Item itemUpdateDescription;
+    private Item itemUpdateAvailable;
 
     @BeforeEach
     void beforeEach() {

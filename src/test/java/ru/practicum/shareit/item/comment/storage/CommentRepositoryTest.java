@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.comment.storage;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,26 +29,37 @@ class CommentRepositoryTest {
     private ItemRepository itemRepository;
     @Autowired
     private UserRepository userRepository;
+    private final User owner = User.builder().id(1L).name("name").email("name@mail.ru").build();
     private final Item item = Item.builder()
             .id(1L)
             .name("Огнетушитель")
             .description("Пользуйтесь при написании тестов ДЛЯ ВСЕГО КОДА")
+            .owner(owner)
             .build();
     private final User commentator = User.builder()
-            .id(1L)
+            .id(2L)
             .name("")
             .email("goryashchie@perdaki.com")
             .build();
-    Comment comment;
+    private Comment comment;
 
     @BeforeEach
     void save() {
+        User saveOwner = userRepository.save(owner);
+        em.persist(saveOwner);
         Item saveItem = itemRepository.save(item);
         em.persist(saveItem);
         User saveUser = userRepository.save(commentator);
         em.persist(saveUser);
-        comment = commentRepository.save(new Comment(1L, "text", item, commentator, LocalDateTime.now()));
+        comment = commentRepository.save(new Comment(2L, "text", item, commentator, LocalDateTime.now()));
         em.persist(comment);
+    }
+
+    @AfterEach
+    void delete() {
+        userRepository.deleteAll();
+        itemRepository.deleteAll();
+        commentRepository.deleteAll();
     }
 
     @Test

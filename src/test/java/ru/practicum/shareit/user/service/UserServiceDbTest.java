@@ -27,9 +27,9 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceDbTest {
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @InjectMocks
-    UserServiceDb userServiceDb;
+    private UserServiceDb userServiceDb;
 
     @BeforeEach
     public void before() {

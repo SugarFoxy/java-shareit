@@ -34,7 +34,7 @@ class UserControllerTest {
     private MockMvc mockMvc;
     @MockBean
     @Qualifier("userServiceDb")
-    UserService userService;
+    private UserService userService;
     private User userCorrect;
     private User userDuplicateEmail;
     private User userNoEmail;

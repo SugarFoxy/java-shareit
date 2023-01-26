@@ -15,14 +15,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ItemMapperTest {
-    User user = User.builder().id(1L).name("user").email("email@mail.ru").build();
-    ItemRequest request = ItemRequest.builder()
+    private User user = User.builder().id(1L).name("user").email("email@mail.ru").build();
+    private ItemRequest request = ItemRequest.builder()
             .id(1L)
             .requestor(new User())
             .created(LocalDateTime.now())
             .description("requestDesc")
             .build();
-    Item item = Item.builder()
+    private Item item = Item.builder()
             .id(1L)
             .name("name")
             .description("desc")
@@ -30,18 +30,18 @@ class ItemMapperTest {
             .owner(user)
             .request(request)
             .build();
-    List<CommentDto> comments = List.of(CommentDto.builder()
+    private List<CommentDto> comments = List.of(CommentDto.builder()
             .text("Фигня эти ваши тесты")
             .id(1L)
             .authorName("Гоша")
             .created(LocalDateTime.now())
             .build());
-    DateBookingDto bookingDtoLast = DateBookingDto.builder()
+    private DateBookingDto bookingDtoLast = DateBookingDto.builder()
             .id(1L)
             .end(LocalDateTime.of(2022, 2, 2, 1, 1))
             .start(LocalDateTime.of(2022, 1, 1, 1, 1))
             .build();
-    DateBookingDto bookingDtoNext = DateBookingDto.builder()
+    private DateBookingDto bookingDtoNext = DateBookingDto.builder()
             .id(2L)
             .end(LocalDateTime.of(2024, 2, 2, 1, 1))
             .start(LocalDateTime.of(2024, 1, 1, 1, 1))
