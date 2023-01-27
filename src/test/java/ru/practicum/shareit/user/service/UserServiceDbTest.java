@@ -40,12 +40,13 @@ class UserServiceDbTest {
     void getUsers_whenFindAll_thenReturnedUserList() {
         User user = new User();
         List<User> usersOutRep = List.of(user);
-
         when(userRepository.findAll()).thenReturn(usersOutRep);
 
         List<UserDto> usersDto = userServiceDb.getUsers();
+
         verify(userRepository).findAll();
         assertEquals(1, usersDto.size());
+        assertEquals(UserMapper.toUserDto(user),usersDto.get(0));
     }
 
     @Test
@@ -143,7 +144,7 @@ class UserServiceDbTest {
     }
 
     @Test
-    public void deleteUserById_deletes() {
+     void deleteUserById_deletes() {
         userServiceDb.deleteUser(0L);
         verify(userRepository).deleteById(0L);
     }

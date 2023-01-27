@@ -8,17 +8,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import ru.practicum.shareit.user.model.User;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class UserRepositoryTest {
+ class UserRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         User user = userRepository.save(User.builder()
                 .id(1L)
                 .name("Имя")
@@ -29,12 +30,13 @@ public class UserRepositoryTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         userRepository.deleteAll();
     }
 
     @Test
-    public void existsByEmailTest() {
+    void existsByEmailTest() {
         assertTrue(userRepository.existsByEmail("email@email.com"));
+        assertFalse(userRepository.existsByEmail("netuTakogo@mail.ru"));
     }
 }

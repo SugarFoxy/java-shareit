@@ -45,34 +45,19 @@ class ItemControllerTest {
     private User user;
     private User incorrectOwner;
     private Item itemCorrect;
-    private Item itemNullName;
-    private Item itemNullDescription;
-    private Item itemNullAvailable;
-    private Item itemIncorrectOwner;
-    private Item itemUpdate;
-    private Item itemUpdateName;
-    private Item itemUpdateDescription;
-    private Item itemUpdateAvailable;
 
     @BeforeEach
     void beforeEach() {
         user = new User(1L, "correct", "forItem@mail.ru");
         incorrectOwner = new User(4L, "incorrect", "incorrect@mail.ru");
         itemCorrect = new Item(1L, "correct", "correct desc", true, user, null);
-        itemNullName = new Item(1L, null, "null name", true, user, null);
-        itemNullDescription = new Item(1L, "null desc", null, true, user, null);
-        itemNullAvailable = new Item(1L, "null available", "null available", null, user, null);
-        itemIncorrectOwner = new Item(1L, "correct", "correct desc", true, incorrectOwner, null);
-        itemUpdate = new Item(1L, "update", "all update", false, user, null);
-        itemUpdateName = new Item(1L, "update name", null, null, user, null);
-        itemUpdateDescription = new Item(1L, null, "update desc", null, user, null);
-        itemUpdateAvailable = new Item(1L, null, null, true, user, null);
     }
 
     @SneakyThrows
     @Test
     void itemCreate_whenItemCorrect_thenReturnedOk() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemCorrect);
+        ItemDto itemDto = ItemMapper
+                .toItemDto(itemCorrect);
         when(itemService.creatItem(1L, itemDto)).thenReturn(itemDto);
 
         String result = mockMvc.perform(post("/items")
@@ -105,7 +90,8 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void itemCreat_whenNotName_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemNullName);
+        ItemDto itemDto = ItemMapper
+                .toItemDto(new Item(1L, null, "null name", true, user, null));
 
         mockMvc.perform(post("/items")
                         .content(objectMapper.writeValueAsString(itemDto))
@@ -119,7 +105,8 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void itemCreat_whenNotDescription_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemNullDescription);
+        ItemDto itemDto = ItemMapper
+                .toItemDto(new Item(1L, "null desc", null, true, user, null));
 
         mockMvc.perform(post("/items")
                         .content(objectMapper.writeValueAsString(itemDto))
@@ -133,7 +120,13 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void itemCreat_whenNotAvailable_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemNullAvailable);
+        ItemDto itemDto = ItemMapper
+                .toItemDto(new Item(1L,
+                        "null available",
+                        "null available",
+                        null,
+                        user,
+                        null));
 
         mockMvc.perform(post("/items")
                         .content(objectMapper.writeValueAsString(itemDto))
@@ -147,7 +140,13 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void itemCreat_whenIncorrectOwner_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemIncorrectOwner);
+        ItemDto itemDto = ItemMapper
+                .toItemDto(new Item(1L,
+                        "correct",
+                        "correct desc",
+                        true,
+                        incorrectOwner,
+                        null));
         when(itemService.creatItem(2L, itemDto)).thenThrow(new MissingObjectException("Невозможно найти. Пользователь отсутствует!"));
 
         String result = mockMvc.perform(post("/items")
@@ -166,7 +165,8 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void updateItem_whenItemCorrect_thenReturnedOk() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemUpdate);
+        ItemDto itemDto = ItemMapper
+                .toItemDto(new Item(1L, "update", "all update", false, user, null));
         when(itemService.updateItem(1L, itemDto, 1L)).thenReturn(itemDto);
 
         String result = mockMvc.perform(patch("/items/{itemId}", 1L)
@@ -184,7 +184,8 @@ class ItemControllerTest {
     @SneakyThrows
     @Test
     void updateItem_whenIncorrectOwner_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper.toItemDto(itemIncorrectOwner);
+        ItemDto itemDto = ItemMapper.toItemDto(
+                new Item(1L, "correct", "correct desc", true, incorrectOwner, null));
         when(itemService.updateItem(2L, itemDto, 1L)).thenThrow(new MissingObjectException("Невозможно найти. Пользователь отсутствует!"));
 
         String result = mockMvc.perform(patch("/items/{itemId}", 1)

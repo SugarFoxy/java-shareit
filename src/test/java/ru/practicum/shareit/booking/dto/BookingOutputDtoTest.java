@@ -21,6 +21,15 @@ public class BookingOutputDtoTest {
 
     private static final LocalDateTime START = LocalDateTime.of(2032, 9, 15, 9, 19);
     private static final LocalDateTime END = LocalDateTime.of(2033, 1, 1, 0, 0);
+    private final User user = new User(1L, "John Doe", "john.doe@mail.com");
+    private final Item item = new Item(
+            1L,
+            "My item",
+            "My item Description",
+            true,
+            new User(),
+            null
+    );
 
     @Test
     void testBookingOutputDto() throws Exception {
@@ -28,8 +37,8 @@ public class BookingOutputDtoTest {
                 1L,
                 START,
                 END,
-                createItem(),
-                createUser(),
+                item,
+                user,
                 BookingStatus.APPROVED
         );
 
@@ -41,24 +50,5 @@ public class BookingOutputDtoTest {
         assertThat(result).extractingJsonPathNumberValue("$.item.id").isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.status").isEqualTo("APPROVED");
-    }
-
-    private Item createItem() {
-        return new Item(
-                1L,
-                "My item",
-                "My item Description",
-                true,
-                createUser(),
-                null
-        );
-    }
-
-    private User createUser() {
-        return new User(
-                1L,
-                "John Doe",
-                "john.doe@mail.com"
-        );
     }
 }
