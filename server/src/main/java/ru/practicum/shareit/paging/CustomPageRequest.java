@@ -73,7 +73,8 @@ public class CustomPageRequest extends PageRequest {
 
     private static void validatePaging(Integer from, Integer size) {
         if (from == null && size == null) return;
-        if (from == null || size == null) throw new InvalidRequestException("must provide both from and size or no one");
+        if (from == null || size == null)
+            throw new InvalidRequestException("must provide both from and size or no one");
         if (size <= 0) throw new InvalidRequestException("size must be positive");
         if (from < 0) throw new InvalidRequestException("from must be positive or 0");
     }
