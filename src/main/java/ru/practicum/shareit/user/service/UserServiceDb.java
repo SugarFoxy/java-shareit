@@ -32,7 +32,7 @@ public class UserServiceDb implements UserService {
     public UserDto getUserById(Long id) {
         log.info("Получен запрос на получение пользователя");
         Optional<User> user = userRepository.findById(id);
-        return UserMapper.toUserDto(user.orElseThrow(() -> new MissingObjectException("Невозможно и найти. Пользователь отсутствует!")));
+        return UserMapper.toUserDto(user.orElseThrow(() -> new MissingObjectException("Невозможно найти. Пользователь отсутствует!")));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserServiceDb implements UserService {
         try {
             return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
         } catch (Exception e) {
-            throw new DuplicateException("Пользователь с таким email уже существует");
+            throw new DuplicateException("Пользователь с таким email  уже существует");
         }
     }
 
@@ -55,14 +55,12 @@ public class UserServiceDb implements UserService {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
+            if (userRepository.existsByEmail(userDto.getEmail())) {
+                throw new DuplicateException("Пользователь с таким email  уже существует");
+            }
             user.setEmail(userDto.getEmail());
         }
-        try {
-            return UserMapper.toUserDto(userRepository.save(user));
-        } catch (Exception e) {
-            throw new DuplicateException(e.getMessage());
-        }
-
+        return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Override

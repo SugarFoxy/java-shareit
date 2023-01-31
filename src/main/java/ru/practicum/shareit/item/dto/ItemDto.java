@@ -25,6 +25,7 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Статус не может отсутствовать", groups = Create.class)
     private Boolean available;
+    private Long requestId;
     private User owner;
     private List<CommentDto> comments;
     private DateBookingDto lastBooking;
