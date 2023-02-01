@@ -69,5 +69,4 @@ public class ItemController {
     ) {
         return commentService.addComment(itemId, authorId, commentDto);
     }
-
 }

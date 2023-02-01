@@ -1,81 +1,46 @@
 package ru.practicum.shareit.user.client;
 
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import ru.practicum.shareit.exception.DuplicateException;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import java.util.List;
-
 @Service
-public class UserClient {
-    private static final String BASE_URL = "http://localhost:9090/users/";
-    private final WebClient webClient = WebClient.create(BASE_URL);
-    ;
+public class UserClient extends BaseClient {
+    private static final String API_PREFIX = "/users";
 
-    public UserDto getUserById(final Long id) {
-        return webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/{userId}/")
-                        .build(id))
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(UserDto.class)
-                .block();
+    @Autowired
+    public UserClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
+        super(
+                builder
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
+                        .requestFactory(HttpComponentsClientHttpRequestFactory::new)
+                        .build()
+        );
     }
 
-    public UserDto createUser(UserDto user) {
-        return webClient
-                .post()
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(user)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new DuplicateException("Пользовыатель с такой почтой уже существует")))
-                .bodyToMono(UserDto.class)
-                .block();
+    public ResponseEntity<Object> createUser(UserDto userDto) {
+        return post("", userDto);
     }
 
-    public List<UserDto> getAllUsers() {
-        return webClient
-                .get()
-                .uri(BASE_URL)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserDto>>() {
-                })
-                .block();
+    public ResponseEntity<Object> updateUser(long userId, UserDto userDto) {
+        return patch("/" + userId, userId, userDto);
     }
 
-    public UserDto updateUser(Long id, UserDto user) {
-        return webClient
-                .patch()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/{userId}/")
-                        .build(id))
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(user)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new DuplicateException("Пользовыатель с такой почтой уже существует")))
-                .bodyToMono(UserDto.class)
-                .block();
+    public ResponseEntity<Object> getAllUsers() {
+        return get("");
     }
 
-    public void deleteUser(final Long id) {
-        webClient
-                .delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/{userId}/")
-                        .build(id))
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .subscribe();
+    public ResponseEntity<Object> getUserById(long userId) {
+        return get("/" + userId, userId);
+    }
+
+    public ResponseEntity<Object> deleteUserById(long userId) {
+        return delete("/" + userId, userId);
     }
 }
