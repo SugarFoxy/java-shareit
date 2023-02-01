@@ -3,14 +3,12 @@ package ru.practicum.shareit.booking.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.state.BookingState;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -25,7 +23,7 @@ public class BookingController {
 
     @PostMapping
     public BookingOutputDto createBooking(
-            @Valid @RequestBody BookingInputDto bookingInputDto,
+            @RequestBody BookingInputDto bookingInputDto,
             @RequestHeader("X-Sharer-User-Id") @NotNull Long userId
     ) {
         return bookingService.createBooking(bookingInputDto, userId);
