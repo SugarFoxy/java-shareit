@@ -86,18 +86,6 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void addRequest_whenDescriptionNotValid_thenReturnedClientError() {
-        mockMvc.perform(post("/requests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto))
-                        .header("X-Sharer-User-Id", 1))
-                .andExpect(status().is4xxClientError());
-
-        verify(requestService, never()).addRequest(anyLong(), any());
-    }
-
-    @SneakyThrows
-    @Test
     void addRequest_whenNotUserId_thenReturnedClientError() {
         requestDto.setDescription("test");
         mockMvc.perform(post("/requests")

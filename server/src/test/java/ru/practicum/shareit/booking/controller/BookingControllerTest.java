@@ -67,18 +67,6 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void createBooking_whenBookingNotValid_thenReturnedClientError() {
-        mockMvc.perform(post("/bookings")
-                        .content(objectMapper.writeValueAsString(bookingInput))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1))
-                .andExpect(status().is4xxClientError());
-
-        verify(bookingService, never()).createBooking(any(), anyLong());
-    }
-
-    @SneakyThrows
-    @Test
     void createBooking_whenBookingNotUserId_thenReturnedClientError() {
         bookingInput = BookingInputDto.builder().itemId(1L).build();
 
@@ -231,7 +219,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    public void getAllBookingsByUserIdUnsupportedStateTestFail() throws Exception {
+    public void getAllBookingsByUserIdUnsupportedStateTestFail() {
         when(bookingService.getAllBookings(anyLong(), any(), anyInt(), anyInt()))
                 .thenThrow(new UnknownStateException(""));
 

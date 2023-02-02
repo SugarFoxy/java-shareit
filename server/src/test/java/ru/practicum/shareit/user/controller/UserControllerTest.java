@@ -37,9 +37,6 @@ class UserControllerTest {
     private UserService userService;
     private User userCorrect;
     private User userDuplicateEmail;
-    private User userNoEmail;
-    private User userInvalidEmail;
-    private User userUpdateInvalidEmail;
     private User user;
 
     @BeforeEach
@@ -47,9 +44,6 @@ class UserControllerTest {
         user = new User(3L, "correct", "user@mail.ru");
         userCorrect = new User(2L, "correct", "correct@mail.ru");
         userDuplicateEmail = new User(null, "duplicate", "correct@mail.ru");
-        userNoEmail = new User(2L, "no email", "");
-        userInvalidEmail = new User(3L, "invalid email", "invalid.email");
-        userUpdateInvalidEmail = new User(7L, null, "invalid.email");
     }
 
     @SneakyThrows
@@ -89,32 +83,6 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUser_whenNoEmail_thenReturnedBadRequest() {
-        UserDto userDtoNoEmail = UserMapper.toUserDto(userNoEmail);
-
-        mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(userDtoNoEmail))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-
-        verify(userService, never()).createUser(any());
-    }
-
-    @SneakyThrows
-    @Test
-    void createUser_whenEmailInvalid_thenReturnedBadRequest() {
-        UserDto userDtoInvalidEmail = UserMapper.toUserDto(userInvalidEmail);
-
-        mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(userDtoInvalidEmail))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-
-        verify(userService, never()).createUser(any());
-    }
-
-    @SneakyThrows
-    @Test
     void updateUser_whenUserCorrect_thenReturnedOk() {
         UserDto userDtoToUpdate = UserMapper.toUserDto(user);
         when(userService.updateUser(userDtoToUpdate, 1L)).thenReturn(userDtoToUpdate);
@@ -147,19 +115,6 @@ class UserControllerTest {
 
         assertEquals("{\"error\":\"Пользователь с таким email  уже существует\"}", result);
         verify(userService).updateUser(userDtoDuplication, 1L);
-    }
-
-    @SneakyThrows
-    @Test
-    void updateUser_whenEmailInvalid_thenReturnedBadRequest() {
-        UserDto userDtoInvalidEmail = UserMapper.toUserDto(userUpdateInvalidEmail);
-
-        mockMvc.perform(patch("/users/{userId}", 1)
-                        .content(objectMapper.writeValueAsString(userDtoInvalidEmail))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-
-        verify(userService, never()).updateUser(any(), anyLong());
     }
 
     @SneakyThrows

@@ -89,56 +89,6 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void itemCreat_whenNotName_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper
-                .toItemDto(new Item(1L, null, "null name", true, user, null));
-
-        mockMvc.perform(post("/items")
-                        .content(objectMapper.writeValueAsString(itemDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().is4xxClientError());
-
-        verify(itemService, never()).creatItem(anyLong(), any());
-    }
-
-    @SneakyThrows
-    @Test
-    void itemCreat_whenNotDescription_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper
-                .toItemDto(new Item(1L, "null desc", null, true, user, null));
-
-        mockMvc.perform(post("/items")
-                        .content(objectMapper.writeValueAsString(itemDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().is4xxClientError());
-
-        verify(itemService, never()).creatItem(anyLong(), any());
-    }
-
-    @SneakyThrows
-    @Test
-    void itemCreat_whenNotAvailable_thenRequestedClientError() {
-        ItemDto itemDto = ItemMapper
-                .toItemDto(new Item(1L,
-                        "null available",
-                        "null available",
-                        null,
-                        user,
-                        null));
-
-        mockMvc.perform(post("/items")
-                        .content(objectMapper.writeValueAsString(itemDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().is4xxClientError());
-
-        verify(itemService, never()).creatItem(anyLong(), any());
-    }
-
-    @SneakyThrows
-    @Test
     void itemCreat_whenIncorrectOwner_thenRequestedClientError() {
         ItemDto itemDto = ItemMapper
                 .toItemDto(new Item(1L,
