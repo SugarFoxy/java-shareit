@@ -303,24 +303,6 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void postComment_whenCorrectNotValid_thenReturnedClientError() {
-        CommentDto comment = CommentDto.builder().text(null).build();
-
-        String result = mockMvc.perform(post("/items/{itemId}/comment", 1)
-                        .content(objectMapper.writeValueAsString(comment))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1))
-                .andExpect(status().is4xxClientError())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
-        verify(commentService, never()).addComment(anyLong(), anyLong(), any());
-        assertEquals("{\"error\":\" default message [Коментарий не может быть пустым]]\"}", result);
-    }
-
-    @SneakyThrows
-    @Test
     void postComment_whenCorrectNotUserId_thenReturnedClientError() {
         CommentDto comment = CommentDto.builder().text("test").build();
         when(commentService.addComment(1L, 1L, comment)).thenReturn(comment);

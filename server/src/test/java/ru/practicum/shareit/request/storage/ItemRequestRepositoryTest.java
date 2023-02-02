@@ -48,8 +48,9 @@ public class ItemRequestRepositoryTest {
 
     @AfterEach
     public void afterEach() {
-        userRepository.deleteAll();
         itemRequestRepository.deleteAll();
+        itemRequestRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test

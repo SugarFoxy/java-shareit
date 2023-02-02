@@ -36,14 +36,16 @@ class CommentRepositoryTest {
         em.persist(owner);
         Item item = itemRepository.save(Item.builder()
                 .id(1L)
+                .available(true)
                 .name("Огнетушитель")
                 .description("Пользуйтесь при написании тестов ДЛЯ ВСЕГО КОДА")
                 .owner(owner)
+
                 .build());
         em.persist(item);
         User commentator = userRepository.save(User.builder()
                 .id(2L)
-                .name("")
+                .name("name")
                 .email("goryashchie@perdaki.com")
                 .build());
         em.persist(commentator);
@@ -54,8 +56,8 @@ class CommentRepositoryTest {
 
     @AfterEach
     void delete() {
-        userRepository.deleteAll();
         itemRepository.deleteAll();
+        userRepository.deleteAll();
         commentRepository.deleteAll();
     }
 
