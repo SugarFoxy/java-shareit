@@ -31,7 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### ENV ###
-*.env
-lalala.txt
