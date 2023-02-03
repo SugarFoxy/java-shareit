@@ -9,8 +9,8 @@ services:
       - "8080:8080"
     depends_on:
       - server
-    environment:
-      - SHAREIT_SERVER_URL=http://server:9090
+    env_file:
+      - gateway.env
 
   server:
     build: ./server
@@ -21,13 +21,8 @@ services:
       - "9090:9090"
     depends_on:
       - db
-    environment:
-      - POSTGRES_DB=shareit
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=shareit
+    env_file:
+      - server.env
 
   db:
     image: postgres:14.4-alpine
@@ -38,7 +33,5 @@ services:
       - "5455:5432"
     volumes:
       - /var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=shareit
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+    env_file:
+      - db.env
