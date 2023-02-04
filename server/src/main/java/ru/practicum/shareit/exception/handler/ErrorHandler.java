@@ -31,56 +31,49 @@ public class ErrorHandler {
     public Map<String, String> handle(final MethodArgumentNotValidException e) {
         String[] allErrors = e.getAllErrors().toString().split(";");
         String massage = allErrors[allErrors.length - 1];
-        Map<String, String> error = Map.of("error", massage);
         log.warn(massage);
-        return error;
+        return Map.of("error", massage);
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handle(final MissingObjectException e) {
-        Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handle(final DuplicateException e) {
-        Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final InvalidRequestException e) {
-        Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final MissingRequestHeaderException e) {
-        Map<String, String> error = Map.of("error", Objects.requireNonNull(e.getMessage()));
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", Objects.requireNonNull(e.getMessage()));
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handle(final OtherDataException e) {
-        Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final IllegalArgumentException e) {
-        Map<String, String> error = Map.of("error", "Unknown state: UNSUPPORTED_STATUS");
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", "Unknown state: UNSUPPORTED_STATUS");
     }
 }

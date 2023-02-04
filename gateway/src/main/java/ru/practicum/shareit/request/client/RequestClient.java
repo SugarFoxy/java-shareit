@@ -28,11 +28,11 @@ public class RequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addRequest(ItemRequestDto itemRequestDto, long userId) {
-        return post("", userId, itemRequestDto);
+        return post(userId, itemRequestDto);
     }
 
     public ResponseEntity<Object> getRequestsByUser(long userId) {
-        return get("", userId);
+        return get(userId);
     }
 
     public ResponseEntity<Object> getAllRequests(long userId, Integer from, Integer size) {

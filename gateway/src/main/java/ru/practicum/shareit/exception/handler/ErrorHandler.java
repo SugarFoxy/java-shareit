@@ -19,24 +19,21 @@ public class ErrorHandler {
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final ValidationException e) {
-        Map<String, String> error = Map.of("error", Objects.requireNonNull(e.getMessage()));
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", Objects.requireNonNull(e.getMessage()));
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final IllegalArgumentException e) {
-        Map<String, String> error = Map.of("error", e.getMessage());
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final MissingRequestHeaderException e) {
-        Map<String, String> error = Map.of("error", Objects.requireNonNull(e.getMessage()));
         log.warn(e.getMessage());
-        return error;
+        return Map.of("error", Objects.requireNonNull(e.getMessage()));
     }
 }

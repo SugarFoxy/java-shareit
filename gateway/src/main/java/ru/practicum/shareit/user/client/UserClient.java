@@ -25,7 +25,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createUser(UserDto userDto) {
-        return post("", userDto);
+        return post(userDto);
     }
 
     public ResponseEntity<Object> updateUser(long userId, UserDto userDto) {
@@ -33,7 +33,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAllUsers() {
-        return get("");
+        return get();
     }
 
     public ResponseEntity<Object> getUserById(long userId) {
