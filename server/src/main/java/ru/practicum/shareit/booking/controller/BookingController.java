@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingOutputDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.state.BookingState;
 
-import javax.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @RestController

@@ -21,4 +21,3 @@ public class RestTemplateConfiguration {
                 .setConnectTimeout(Duration.ofSeconds(5));
     }
 }
-
