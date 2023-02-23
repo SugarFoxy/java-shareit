@@ -1,4 +1,5 @@
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=SugarFoxy&repo=java-shareit)](https://github.com/SugarFoxy/java-shareit)
+# java-shareit
+
 
 Проект 4го модуля курса Java разработчик Яндекс.Практикум.
 
@@ -10,11 +11,14 @@
 
 Покрытие модулей тестами составляет:
 
-- server - 94%
-- gateway - 54%
-  <img alt="Custom badge" src="https://img.shields.io/endpoint?label=gateway&style=for-the-badge&url=46%25">
 
-API:
+сервис | покрытие
+:------|----------:
+ server | 94%
+ gateway | 54%
+
+
+API: 
 
 Методы для работы с пользователями:
 - POST /users - создание
@@ -51,4 +55,3 @@ API:
 Схема БД
 
 ![er filmorate](https://github.com/SugarFoxy/java-shareit/blob/add-docker/resources/shareItDB.jpg?raw=true)
-
